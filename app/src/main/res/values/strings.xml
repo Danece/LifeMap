@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">lifeMap</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_update_location">更新位置</string>
+    <string name="title_current_location">目前位置</string>
+    <string name="title_country">國家</string>
+    <string name="title_activity_create_new_pin">createNewPin</string>
+    <string name="title_remark_style">標記圖形</string>
+    <string name="title_longitude">經度</string>
+    <string name="title_latitude">緯度</string>
+    <string name="title_pin_type">標記類型</string>
+    <string name="message_current_location">目前位置訊息</string>
+    <string name="message_update_location">更新位置訊息</string>
+    <string name="update">更新</string>
+    <string name="clear">清除</string>
+    <string name="cancel">取消</string>
+    <string name="pinTitle">標題</string>
+    <string name="pinContent">內容</string>
+    <string name="date">日期</string>
+    <string name="button_take_photo">照相</string>
+    <string name="button_gps">定位</string>
+    <string name="button_ok">確認</string>
+    <string name="selection_cube">方形</string>
+    <string name="selection_sphere">圓形</string>
+    <string name="selection_attraction">景點</string>
+    <string name="selection_food">美食</string>
+    <string name="show_marker_image">標記示意圖</string>
+    <string name="create_pin_btn">建立新標記</string>
+</resources>
