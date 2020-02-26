@@ -6,12 +6,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,6 +35,10 @@ import android.widget.Toast;
 import com.example.lifemap.DIY_Kit.BitmapCut;
 import com.example.lifemap.DIY_Kit.PickerView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLData;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -37,8 +46,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class CreateNewPin extends AppCompatActivity {
+    private final String PERMISSION_WRITE_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
     DecimalFormat df = new DecimalFormat("##.000000");
     static final String db_name = "pinDB";      // 資料庫名稱
     static final String tb_name = "pinDetail";  // 資料表名稱
@@ -48,7 +59,11 @@ public class CreateNewPin extends AppCompatActivity {
     String today;       // 當天日期
     PickerView country_pv ;
     Bitmap resultPicture;   // 照片
+    Bitmap markerImage;     // 標記圖片
+    Bitmap markerImageForEdit;
+    String markerImageUuid; // 標記圖片UUID
     String errorMessage;    // 錯誤訊息
+    String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/captureImage/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,19 +79,6 @@ public class CreateNewPin extends AppCompatActivity {
         today = df.format(date);
         TextView dateTv =  findViewById(R.id.dateTv);
         dateTv.setText(today);
-        // 初始化下拉選單
-//        Spinner spinner = (Spinner) findViewById(R.id.country_Spinner);
-        // 建立數據源
-//        List<Country> countries = new ArrayList<Country>();
-//        countries.add(new Country("Taiwan"));
-//        countries.add(new Country("Japan"));
-//        countries.add(new Country("South Korea"));
-//        countries.add(new Country("United Kingdom"));
-//        countries.add(new Country("USA"));
-        // 建立 Adapter 綁定數據源
-//        MyAdapter _MyAdapter = new MyAdapter(this, countries);
-        // 綁定 Adapter
-//        spinner.setAdapter(_MyAdapter);
 
     }
 
@@ -86,6 +88,10 @@ public class CreateNewPin extends AppCompatActivity {
             RadioGroup markerStyle = (RadioGroup) findViewById(R.id.marker_style_group);
             Bitmap background = null;
             Bitmap foreground = resultPicture;
+            Bitmap image = resultPicture;
+            image = BitmapCut.imageToSquare(image, image.isRecycled());
+            image = BitmapCut.removeCorner(image, 30);
+            markerImageForEdit = image;
             switch (markerStyle.getCheckedRadioButtonId()) {
                 case R.id.cube_radioButton:
                     foreground = BitmapCut.imageToSquare(foreground, foreground.isRecycled());
@@ -94,19 +100,20 @@ public class CreateNewPin extends AppCompatActivity {
                     foreground = BitmapCut.toConformBitmap(background, foreground, 0);
                     break;
                 case R.id.sphere_radioButton:
+                    foreground = BitmapCut.imageToSquare(foreground, foreground.isRecycled());
                     foreground = BitmapCut.imageToCircle(foreground);
                     background = BitmapFactory.decodeResource(getResources(),R.mipmap.marker_background2);
                     foreground = BitmapCut.toConformBitmap(background, foreground, 1);
                     break;
             }
-//            ImageView imageView = (ImageView) findViewById(R.id.resultPhotoIv);
-//            Bitmap bmp = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+            markerImage = foreground;
             Bundle bundle = new Bundle();
             bundle.putParcelable("bitmap", foreground);
 
             Intent intentMap = new Intent(CreateNewPin.this, MapsActivity.class);
-            // 設定儲存的座標
+            // 設定儲存的 Marker
             intentMap.putExtras(bundle);
+            intentMap.putExtra("entrance", "createPin");
             startActivityForResult(intentMap, 101);
         } catch (Exception e) {
             Log.d("Error", e.toString());
@@ -126,8 +133,9 @@ public class CreateNewPin extends AppCompatActivity {
     }
 
     // 開啟相機功能
-    public void openCamere(View view) {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    public void openCamera(View view) {
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent intent = new Intent(CreateNewPin.this, Camera2Activity.class);
         startActivityForResult(intent, 100);
     }
 
@@ -138,39 +146,28 @@ public class CreateNewPin extends AppCompatActivity {
         if(Activity.RESULT_OK == resultCode) {
             // 拍照
             if(100 == requestCode) {
-                RadioGroup markerStyle = (RadioGroup) findViewById(R.id.marker_style_group);
-                Bitmap background = null;
-                Bundle extras = intent.getExtras();
-                Bitmap bmp = (Bitmap) extras.get("data");
-                resultPicture = bmp;
-                // 開啟"定位"按鈕
-                Button positioningBtn = (Button) findViewById(R.id.positioningBtn);
-                positioningBtn.setEnabled(true);
-//                ImageView imv = (ImageView) findViewById(R.id.resultPhotoIv);
-//
-//                switch (markerStyle.getCheckedRadioButtonId()) {
-//                    case R.id.cube_radioButton:
-//                        bmp = BitmapCut.imageToSquare(bmp, bmp.isRecycled());
-//                        bmp = BitmapCut.removeCorner(bmp, 30);
-//                        background = BitmapFactory.decodeResource(getResources(),R.mipmap.marker_background);
-//                        bmp = BitmapCut.toConformBitmap(background, bmp, 0);
-//                        break;
-//                    case R.id.sphere_radioButton:
-//                        bmp = BitmapCut.imageToCircle(bmp);
-//                        background = BitmapFactory.decodeResource(getResources(),R.mipmap.marker_background2);
-//                        bmp = BitmapCut.toConformBitmap(background, bmp, 1);
-//                        break;
-//                }
-//                imv.setImageBitmap(bmp);
+                if( null != resultPicture && !resultPicture.equals(resultPicture)) {
+                    resultPicture.recycle();
+                    resultPicture = null;
+                }
+                Bitmap bmp = getSmallBitmap(dir + "capture.jpeg");
+//                Bitmap bmp = readFile(new File(dir + "capture.jpeg"));
+                if (null != bmp) {
+                    resultPicture = bmp;
+                    // 開啟"定位"按鈕
+                    Button positioningBtn = (Button) findViewById(R.id.positioningBtn);
+                    positioningBtn.setEnabled(true);
+
+//                    File markerImageFile = new File(dir + "capture.jpeg");
+//                    if(markerImageFile.exists()) {
+//                        markerImageFile.delete();
+//                    }
+                }
             }
             // GPS
             if(101 == requestCode) {
                 Bundle extras = intent.getExtras();
-//                TextView lng = (TextView) findViewById(R.id.lng_value);
-//                lng.setText(String.valueOf(extras.getDouble("longitude")));
                 longitude = String.valueOf(df.format(extras.getDouble("longitude")));
-//                TextView lat = (TextView) findViewById(R.id.lat_value);
-//                lat.setText(String.valueOf(extras.getDouble("latitude")));
                 latitude = String.valueOf(df.format(extras.getDouble("latitude")));
             }
         } else {
@@ -184,71 +181,87 @@ public class CreateNewPin extends AppCompatActivity {
 
     // Picker View
     public void selectCountry(View view) {
+        LayoutInflater inflater = LayoutInflater.from(CreateNewPin.this);
+        final View v = inflater.inflate(R.layout.pickerview_country, null);
+        final String[] selected = new String[1];
+        country_pv  = (PickerView)  v.findViewById(R.id.country_pv);
+        List data  = new ArrayList();
+        data.add("台灣");
+        data.add("日本");
+        data.add("南韓");
+        data.add("英國");
+        data.add("美國");
+        data.add("越南");
+        data.add("中國");
+        data.add("法國");
+        data.add("加拿大");
+
+        country_pv . setData ( data );
+        country_pv . setOnSelectListener ( new  PickerView.onSelectListener()
         {
-            LayoutInflater inflater = LayoutInflater.from(CreateNewPin.this);
-            final View v = inflater.inflate(R.layout.pickerview_country, null);
-            final String[] selected = new String[1];
-            country_pv  = (PickerView)  v.findViewById(R.id.country_pv);
-            List data  = new ArrayList();
-            data.add("Taiwan");
-            data.add("Japan");
-            data.add("South Korea");
-            data.add("United Kingdom");
-            data.add("USA");
-            country_pv . setData ( data );
-            country_pv . setOnSelectListener ( new  PickerView.onSelectListener()
+            @Override
+            public void  onSelect ( String  text )
             {
-                @Override
-                public void  onSelect ( String  text )
-                {
-                    selected[0] = text;
-                    Toast. makeText ( CreateNewPin.this , "選擇了" +  text  + "分" ,
-                            Toast . LENGTH_SHORT ). show ();
+                selected[0] = text;
+                Toast. makeText ( CreateNewPin.this , "選擇了" +  text  + "分" ,
+                        Toast . LENGTH_SHORT ). show ();
+            }
+        });
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(CreateNewPin.this);
+        dialog.setTitle("國家選擇");
+        dialog.setMessage("請選擇目前所在國家");
+        dialog.setView(v);
+        dialog.setNegativeButton("NO",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                // TODO Auto-generated method stub
+                Toast.makeText(CreateNewPin.this, "未做修改",Toast.LENGTH_SHORT).show();
+            }
+
+        });
+        dialog.setPositiveButton("YES",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                // TODO Auto-generated method stub
+                String result =  country_pv.getSelected();
+                ImageView imageView = (ImageView) findViewById(R.id.countryLogoIv);
+                Button button = (Button) findViewById(R.id.selectCountryBtn);
+                if("台灣" == result) {
+                    imageView.setImageResource(R.mipmap.taiwan_flag_icon);
+                    button.setText("台灣");
+                } else if("日本" == result) {
+                    imageView.setImageResource(R.mipmap.japan_flag_icon);
+                    button.setText("日本");
+                } else if("南韓" == result) {
+                    imageView.setImageResource(R.mipmap.south_korea_flag_icon);
+                    button.setText("南韓");
+                } else if("英國" == result) {
+                    imageView.setImageResource(R.mipmap.united_kingdom_flag_icon);
+                    button.setText("英國");
+                } else if("美國" == result) {
+                    imageView.setImageResource(R.mipmap.united_states_of_america_flag_icon);
+                    button.setText("美國");
+                } else if("越南" == result) {
+                    imageView.setImageResource(R.mipmap.vietnam_flag_icon);
+                    button.setText("越南");
+                } else if("中國" == result) {
+                    imageView.setImageResource(R.mipmap.chin_flag_icon);
+                    button.setText("中國");
+                } else if("法國" == result) {
+                    imageView.setImageResource(R.mipmap.france_flag_icon);
+                    button.setText("法國");
+                } else if("加拿大" == result) {
+                    imageView.setImageResource(R.mipmap.canada_flag_icon);
+                    button.setText("加拿大");
                 }
-            });
 
-            AlertDialog.Builder dialog = new AlertDialog.Builder(CreateNewPin.this);
-            dialog.setTitle("國家選擇");
-            dialog.setMessage("請選擇目前所在國家");
-            dialog.setView(v);
-            dialog.setNegativeButton("NO",new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface arg0, int arg1) {
-                    // TODO Auto-generated method stub
-                    Toast.makeText(CreateNewPin.this, "未做修改",Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(CreateNewPin.this, "選擇:"+result,Toast.LENGTH_SHORT).show();
+            }
 
-            });
-            dialog.setPositiveButton("YES",new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface arg0, int arg1) {
-                    // TODO Auto-generated method stub
-                    String result =  country_pv.getSelected();
-                    ImageView imageView = (ImageView) findViewById(R.id.countryLogoIv);
-                    Button button = (Button) findViewById(R.id.selectCountryBtn);
-                    if("Taiwan" == result) {
-                        imageView.setImageResource(R.mipmap.taiwan_logo);
-                        button.setText("Taiwan");
-                    } else if("Japan" == result) {
-                        imageView.setImageResource(R.mipmap.japan_logo);
-                        button.setText("Japan");
-                    } else if("South Korea" == result) {
-                        imageView.setImageResource(R.mipmap.south_korea_logo);
-                        button.setText("South Korea");
-                    } else if("United Kingdom" == result) {
-                        imageView.setImageResource(R.mipmap.united_kingdom_logo);
-                        button.setText("United Kingdom");
-                    } else if("USA" == result) {
-                        imageView.setImageResource(R.mipmap.usa_logo);
-                        button.setText("USA");
-                    }
+        });
+        dialog.show();
 
-                    Toast.makeText(CreateNewPin.this, "選擇:"+result,Toast.LENGTH_SHORT).show();
-                }
-
-            });
-            dialog.show();
-        }
     }
 
     // 建立資料庫
@@ -257,22 +270,19 @@ public class CreateNewPin extends AppCompatActivity {
         db = openOrCreateDatabase(db_name, Context.MODE_PRIVATE, null);
         String createTable = "CREATE TABLE IF NOT EXISTS " + tb_name +
                 "(title VARCHAR(15), " +
-                "content VARCHAR(60), " +
                 "date VARCHAR(10), " +
                 "country VARCHAR(20), " +
                 "markerStyle VARCHAR(4), " +
                 "markerType VARCHAR(4), " +
-                "markerImageName VARCHAR(6), " +
+                "markerImageUuid VARCHAR(40), " +
                 "longitude DOUBLE(20), " +
                 "latitude DOUBLE(20))" ;
         db.execSQL(createTable);
-        db.close();
     }
 
     // 寫入資料庫
     public void writeDB() {
         EditText title = (EditText) findViewById(R.id.titleEt);
-        EditText content = (EditText) findViewById(R.id.contentEt);
         String country =  country_pv.getSelected();
         String markerStyle = null;
         RadioGroup markerStyleGroup = (RadioGroup) findViewById(R.id.marker_style_group);
@@ -297,17 +307,81 @@ public class CreateNewPin extends AppCompatActivity {
 
         ContentValues cv = new ContentValues(9);
         cv.put("title", title.getText().toString());
-        cv.put("content", content.getText().toString());
         cv.put("date", today);
         cv.put("country", country);
         cv.put("markerStyle", markerStyle);
         cv.put("markerType", markerType);
-//        cv.put("markerImageName");
+        cv.put("markerImageUuid", markerImageUuid);
         cv.put("longitude", longitude);
         cv.put("latitude", latitude);
+
+        db.insert(tb_name, null, cv);
+        db.close();
     }
 
-    //
+    // 建立存放圖片的資料夾 & 存放圖片
+    public void saveMarkerImage() {
+        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/markerImage/";
+        File markerImageFile = new File(dir);
+        markerImageUuid = UUID.randomUUID().toString();
+
+        // 資料夾是否存在，不存在則建立資料夾
+        if(!markerImageFile.exists()) {
+            markerImageFile.mkdir();
+        }
+
+        try {
+            File file = new File(dir + markerImageUuid + ".png");
+            FileOutputStream outputStream = new FileOutputStream(file);
+            markerImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            File file2 = new File(dir + markerImageUuid + "_edit.png");
+            FileOutputStream outputStream2 = new FileOutputStream(file2);
+            markerImageForEdit.compress(Bitmap.CompressFormat.PNG, 100, outputStream2);
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // 確認是否需要請求寫入 File 的權限
+    private boolean needCheckPermission() {
+        //MarshMallow(API-23)之後要在 Runtime 詢問權限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String[] perms = {PERMISSION_WRITE_STORAGE};
+            int permsRequestCode = 200;
+            requestPermissions(perms, permsRequestCode);
+            return true;
+        }
+
+        return false;
+    }
+
+    // 是否已請求過寫入 File 的權限
+    private boolean hasPermission(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            return(ActivityCompat.checkSelfPermission(this, PERMISSION_WRITE_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        }
+        return true;
+    }
+
+    // 授權取得
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 200) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(">>>", "取得授權，可以執行動作了");
+                    saveMarkerImage();
+                }
+            }
+        }
+    }
 
     // 檢查必填
     public boolean checkKeyValue() {
@@ -327,6 +401,12 @@ public class CreateNewPin extends AppCompatActivity {
             errorMessage = "請定位目前位置";
             return false;
         }
+        // 國家
+        String country =  country_pv.getSelected();
+        if("choose".equals(country)) {
+            errorMessage = "請選擇國家";
+            return false;
+        }
         return true;
     }
 
@@ -341,6 +421,19 @@ public class CreateNewPin extends AppCompatActivity {
         if(checkKeyValue()) {
             // 資料庫建立
             checkAndCreateDB();
+            // 儲存 MarkerImage
+            if (!hasPermission()) {
+                if (needCheckPermission()) {
+                    //如果須要檢查權限，由於這個步驟要等待使用者確認，
+                    //所以不能立即執行儲存的動作，
+                    //必須在 onRequestPermissionsResult 回應中才執行
+                    return;
+                }
+            } else {
+                saveMarkerImage();
+            }
+            // 寫入資料庫
+            writeDB();
             finish();
         } else {
             AlertDialog.Builder dialog = new AlertDialog.Builder(CreateNewPin.this);
@@ -355,4 +448,50 @@ public class CreateNewPin extends AppCompatActivity {
         }
     }
 
+    //**************
+    // 讀檔案 (沒用到)
+    public static Bitmap readFile(File file) {
+        Bitmap bitmap = null;
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            int length = fis.available();
+            byte[] buffer = new byte[length];
+            fis.read(buffer);
+            bitmap = BitmapFactory.decodeByteArray(buffer, 0, buffer.length);
+            fis.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+    //計算圖片的縮放值
+    public static int calculateInSampleSize(BitmapFactory.Options options,int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int heightRatio = Math.round((float) height/ (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        return inSampleSize;
+    }
+
+    // 根據路徑獲得圖片並壓縮，返回bitmap用於顯示
+    public static Bitmap getSmallBitmap(String filePath) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, 100, 330); // 480-800
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+
+        return BitmapFactory.decodeFile(filePath, options);
+    }
 }

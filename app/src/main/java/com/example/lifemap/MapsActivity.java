@@ -1,6 +1,7 @@
 package com.example.lifemap;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -8,19 +9,24 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.lifemap.DIY_Kit.BitmapCut;
+import com.example.lifemap.cluster.CustomClusterRenderer;
+import com.example.lifemap.cluster.MyClusterItem;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -33,10 +39,16 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterManager;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -52,15 +64,28 @@ public class MapsActivity extends FragmentActivity
     // 記錄目前最新位置
     private Location currentLocation;
     // 顯示目前與儲存位置的標記物件
-    private Marker currentMarker, itemMarker;
+    public Marker currentMarker, itemMarker;
+    List<Marker> markerList = new ArrayList<Marker>();
     // GPS
     public static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
     private LocationManager lms;
     double lat, lng;
+    String entrance;
     DecimalFormat df = new DecimalFormat("##0.0000");
-    //
+    // 標記圖
     Bitmap markerIcon;
 
+    // 傳入參數For ShowMap
+    List titleList = new ArrayList();
+    List contentList = new ArrayList();
+    List dateList = new ArrayList();
+    List markerImageUuidList = new ArrayList();
+    List longitudeList = new ArrayList();
+    List latitudeList = new ArrayList();
+
+    //
+    private ClusterManager<MyClusterItem> mClusterManager;
+    private int runCount=0;
     // 初始化建立
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +95,18 @@ public class MapsActivity extends FragmentActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        lms = (LocationManager) getSystemService(LOCATION_SERVICE);
+        // 讀取傳入參數
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         markerIcon = (Bitmap) bundle.getParcelable("bitmap");
+        titleList = bundle.getParcelableArrayList("title");
+        contentList = bundle.getParcelableArrayList("content");
+        dateList = bundle.getParcelableArrayList("date");
+        markerImageUuidList = bundle.getParcelableArrayList("markerImageUuid");
+        longitudeList = bundle.getParcelableArrayList("longitude");
+        latitudeList = bundle.getParcelableArrayList("latitude");
+        entrance = intent.getStringExtra("entrance");
 
         // 設定螢幕不旋轉
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
@@ -84,6 +117,11 @@ public class MapsActivity extends FragmentActivity
         // 建立 Location 請求物件
         configLocationRequest();
 
+        //
+        Button refreshBtn = (Button) findViewById(R.id.refreshBtn);
+        if (entrance.equals("showPins")) {
+            refreshBtn.setVisibility(View.INVISIBLE );
+        }
     }
 
     // 建立 Google API 用戶端物件
@@ -96,6 +134,7 @@ public class MapsActivity extends FragmentActivity
     }
 
     // 建立 Location 請求物件
+    @SuppressLint("RestrictedApi")
     private void configLocationRequest() {
         locationRequest = new LocationRequest();
         // 設定讀取位置的間隔時間為一秒(1000ms)
@@ -105,7 +144,6 @@ public class MapsActivity extends FragmentActivity
         // 設定優先讀取高精確度的位置資訊(GPS)
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -119,20 +157,38 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        initClusterManager();
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.mapstyle));
 
-        // 讀取記事儲存的座標
-        Intent intent = getIntent();
-//        showGPSContacts();
-//        lat = intent.getDoubleExtra("lat", 0.0);
-//        lng = intent.getDoubleExtra("lng", 0.0);
+            if (!success) {
+                Log.e("TAG", "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e("TAG", "Can't find style. Error: ", e);
+        }
 
+        if (entrance.equals("createPin")) {
+            createNewPinPositioning();
+        } else if (entrance.equals("showPins")) {
+            showAllPins();
+            runCount++;
+            if (runCount==2) mClusterManager.cluster();
+        }
+        processController();
+    }
+
+    // 建立標記定位
+    private void createNewPinPositioning() {
         if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     MY_PERMISSION_ACCESS_COARSE_LOCATION);
             return;
         }
-        // 取目前位置經緯度資訊
-        lms = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         Location location = lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         lat = location.getLatitude(); // 經度
         lng = location.getLongitude();// 緯度
@@ -142,7 +198,7 @@ public class MapsActivity extends FragmentActivity
             LatLng itemPlace = new LatLng(lat, lng);
             // 加入地圖標記
             addMarker(itemPlace, "目前位置",
-                    "經度:"+ df.format(lat)+" / 緯度:"+df.format(lng));
+                    "經度:" + df.format(lat) + " / 緯度:" + df.format(lng));
             // 移動地圖
             moveMap(itemPlace);
         } else {
@@ -151,6 +207,35 @@ public class MapsActivity extends FragmentActivity
                 googleApiClient.connect();
             }
         }
+    }
+
+    // 展現所標標記地圖
+    private void showAllPins() {
+        if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    MY_PERMISSION_ACCESS_COARSE_LOCATION);
+            return;
+        }
+        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/markerImage/";
+        if (titleList.size() > 0 && null != titleList) {
+            for (int i = 0; i < titleList.size(); i++) {
+                // 建立座標物件
+                Double latitude = Double.parseDouble(latitudeList.get(i).toString());
+                Double longitude = Double.parseDouble(longitudeList.get(i).toString());
+                LatLng itemPlace = new LatLng(latitude, longitude);
+                markerIcon = BitmapFactory.decodeFile(dir + markerImageUuidList.get(i).toString() + ".png");
+                mClusterManager.addItem(new MyClusterItem(titleList.get(i).toString(), dateList.get(i).toString(),itemPlace,markerIcon));
+            }
+        }
+        // 取目前位置經緯度資訊
+        lms = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        Location location = lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        lat = location.getLatitude(); // 經度
+        lng = location.getLongitude();// 緯度
+        LatLng itemPlace = new LatLng(lat, lng);
+        moveMap(itemPlace);
+        // 關閉更新Manager
+        lms.removeUpdates(this);
     }
 
     // 移動地圖到指定位置
@@ -168,9 +253,7 @@ public class MapsActivity extends FragmentActivity
     // 在地圖加入指定位置與標題的標記
     private void addMarker(LatLng place, String title, String snippet) {
 
-
         BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(markerIcon);
-//                BitmapDescriptorFactory.fromResource(R.id.resultPhotoIv);
         MarkerOptions markerOptions = new MarkerOptions();
 
         markerOptions.position(place)
@@ -179,6 +262,7 @@ public class MapsActivity extends FragmentActivity
                 .icon(icon);
 
         itemMarker = mMap.addMarker(markerOptions);
+        markerList.add(itemMarker);
     }
 
     // 連線 Google Services
@@ -211,7 +295,7 @@ public class MapsActivity extends FragmentActivity
         int errorCode = connectionResult.getErrorCode();
 
         // 裝置無安裝 Google play 服務
-        if(errorCode == connectionResult.SERVICE_MISSING) {
+        if (errorCode == connectionResult.SERVICE_MISSING) {
             Toast.makeText(this, R.string.common_google_play_services_unsupported_text,
                     Toast.LENGTH_LONG).show();
         }
@@ -225,12 +309,6 @@ public class MapsActivity extends FragmentActivity
         LatLng latLng = new LatLng(
                 location.getLatitude(), location.getLongitude()
         );
-        // 設定目前位置標記
-        if(null == currentMarker) {
-            currentMarker = mMap.addMarker(new MarkerOptions().position(latLng));
-        } else {
-            currentMarker.setPosition(latLng);
-        }
         // 移動地圖到目前位置
         moveMap(latLng);
     }
@@ -256,8 +334,22 @@ public class MapsActivity extends FragmentActivity
         super.onResume();
         setUpMapIfNeeded();
         // 連線到 Google API 用戶端
-        if(!googleApiClient.isConnected() && null != currentMarker) {
+        if (!googleApiClient.isConnected() && null != currentMarker) {
             googleApiClient.connect();
+        }
+        String best = lms.getBestProvider(new Criteria(), true);
+        if (null != best) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            lms.requestLocationUpdates(best, 5000, 5, this);
         }
     }
 
@@ -391,6 +483,42 @@ public class MapsActivity extends FragmentActivity
         intent.putExtra("latitude", lat);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    // 重新查詢資料
+    public void refresh(View view) {
+        for(int i=0; i<markerList.size(); i++) {
+            markerList.get(i).remove();
+        }
+        this.createNewPinPositioning();
+    }
+
+    // 群集設定
+    public void initClusterManager() {
+        mClusterManager = new ClusterManager<>(this, mMap);
+        // 設定 item 外框
+        CustomClusterRenderer renderer = new CustomClusterRenderer(this, mMap, mClusterManager);
+        mClusterManager.setRenderer(renderer);
+
+        // 點擊群集
+        mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MyClusterItem>() {
+            @Override
+            public boolean onClusterClick(Cluster<MyClusterItem> cluster) {
+                return false;
+            }
+        });
+        // 點擊群集裡面的項目
+        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyClusterItem>() {
+            @Override
+            public boolean onClusterItemClick(MyClusterItem myClusterItem) {
+                Toast.makeText(MapsActivity.this,"SSSs",Toast.LENGTH_LONG);
+                return false;
+            }
+        });
+
+        // 地圖的事件放入 ClusterManager
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
     }
 
 }
