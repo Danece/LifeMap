@@ -6,51 +6,93 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/addNewPinBtn"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginLeft="64dp"
+        android:background="@color/colorPrimary"
+        app:titleTextColor="@color/colorBarText"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/toolbarText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/actionbar_main"
+            android:textSize="24sp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="15dp"></TextView>
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="64dp"
-        android:background="@drawable/create_new_pin_click"
-        android:onClick="createNewPinClick"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/showMapBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:layout_marginEnd="64dp"
-        android:background="@drawable/show_map_click"
-        android:onClick="showAllPins"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginLeft="64dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/edit_and_clear_click"
-        android:onClick="editPins"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addNewPinBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-    <Button
-        android:id="@+id/backupRestoreBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="94dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="64dp"
-        android:background="@drawable/backup_restore_click"
-        android:onClick="backupAndRestore"
+        <Button
+            android:id="@+id/addNewPinBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="94dp"
+            android:layout_marginLeft="48dp"
+            android:background="@drawable/create_new_pin_click"
+            android:onClick="createNewPinClick" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/showMapBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="94dp"
+            android:layout_marginRight="48dp"
+            android:background="@drawable/show_map_click"
+            android:onClick="showAllPins" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/showMapBtn" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="94dp"
+            android:layout_marginLeft="48dp"
+            android:background="@drawable/edit_and_clear_click"
+            android:onClick="editPins" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/backupRestoreBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="94dp"
+            android:layout_marginRight="48dp"
+            android:background="@drawable/backup_restore_click"
+            android:onClick="backupAndRestore" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/versionTv"
@@ -58,7 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

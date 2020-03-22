@@ -20,31 +20,34 @@
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="0dp" />
 
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="64dp"
-            android:layout_weight="1"
-            android:background="@drawable/return_click"
-            android:onClick="doConfirm"
-            android:textSize="20dp"
-            android:textStyle="bold"
+            android:gravity="center"
+            android:orientation="vertical"
             map:layout_constraintBottom_toBottomOf="parent"
             map:layout_constraintEnd_toEndOf="parent"
-            map:layout_constraintStart_toStartOf="parent" />
+            map:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/refreshBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/refresh_click"
-            android:onClick="refresh"
-            map:layout_constraintBottom_toTopOf="@+id/button5"
-            map:layout_constraintEnd_toEndOf="parent"
-            map:layout_constraintHorizontal_bias="0.498"
-            map:layout_constraintStart_toStartOf="parent" />
+            <Button
+                android:id="@+id/refreshBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/refresh_click"
+                android:onClick="refresh" />
+
+            <Button
+                android:id="@+id/backBtn_map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/return_click"
+                android:onClick="doConfirm"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
 

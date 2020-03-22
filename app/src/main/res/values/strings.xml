@@ -1,10 +1,12 @@
 <resources>
     <string name="package_version_name">版本號碼</string>
+    <string name="actionbar_main">主頁</string>
     <string name="actionbar_createPins">建立標記</string>
     <string name="actionbar_showMap">展示地圖</string>
     <string name="actionbar_editSearch">設定查詢條件</string>
     <string name="actionbar_showPins">標記查詢結果</string>
     <string name="actionbar_editPins">編輯標記</string>
+    <string name="actionbar_backupAndRestore">資料備份</string>
     <string name="app_name">lifeMap</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_update_location">更新位置</string>
@@ -50,4 +52,43 @@
         <item>景點</item>
         <item>美食</item>
     </string-array>
+
+    <string name="choose">選擇</string>
+    <string name="delete">刪除</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+
+    <!--=== Info / Msg ===-->
+    <!-- CreateNewPin -->
+    <string name="create_success">建立成功</string>
+    <string name="take_picture_fail">沒有拍到照片</string>
+    <string name="gps_fail">GPS返回</string>
+    <string name="edit_none">未做修改</string>
+    <!-- ShowMapActivity -->
+    <string name="search_null">查無資料</string>
+    <!-- BackupAndRestoreActivity -->
+    <string name="backup_success">備份成功</string>
+    <string name="backup_fail">備份失敗</string>
+    <string name="restore_success">還原成功</string>
+    <string name="restore_fail">還原失敗</string>
+    <string name="lifeMap_folder_not_exist">LifeMap 資料夾不存在</string>
+    <string name="backup_guideTitle">備份還原操作教學</string>
+    <string name="backup_guideContent">
+        <b><font color="#ff0000">※操作前提:新手機要先安裝程式\n\n</font></b>
+        <b>Step-1.</b> 點擊\"備份\"的圖示按鈕\n\n
+        <b>Step-2.</b> 到手機儲存空間開啟\"LifeMap\"資料夾\n\n
+        <b>Step-3.</b> 將資料夾內的\"backup\"資料夾搬移到新手機\"LifeMap\"資料夾裡面\n\n
+        <b>Step-4.</b> 新手機開啟程式，點擊\"還原\"的圖示按鈕\n\n
+        <b>Step-5.</b> 結束
+    </string>
+    <!-- EditPins -->
+    <string name="delete_pin_success">刪除成功</string>
+    <string name="edit_success">編輯成功</string>
+    <string name="edit_fail">編輯失敗</string>
+    <string name="dialog_delete_title">刪除確認</string>
+    <string name="dialog_delete_info">是否刪除</string>
+
+    <!-- PickerView -->
+    <string name="pickerView_title_country">選擇國家</string>
+    <string name="pickerView_info_country">請選擇目前所在國家</string>
 </resources>

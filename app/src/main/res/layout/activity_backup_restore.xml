@@ -6,23 +6,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/backupBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="94dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="64dp"
-        android:background="@drawable/backup_click"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_backupAndRestore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:titleTextColor="@color/colorBarText"
+        tools:ignore="MissingConstraints">
 
-    <Button
-        android:id="@+id/restoreBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="94dp"
+        <TextView
+            android:id="@+id/toolbarText_backupAndRestore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/actionbar_backupAndRestore"
+            android:textSize="24sp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="15dp"></TextView>
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="64dp"
-        android:layout_marginEnd="64dp"
-        android:background="@drawable/restore_click"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_backupAndRestore">
+
+        <Button
+            android:id="@+id/restoreBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="94dp"
+            android:layout_marginLeft="48dp"
+            android:background="@drawable/restore_click"
+            android:onClick="doRestore" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/backupBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="94dp"
+            android:layout_marginRight="48dp"
+            android:background="@drawable/backup_click"
+            android:onClick="doBackup" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
+        <Button
+            android:id="@+id/back_backupAndRestore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/return_click"
+            android:gravity="center"
+            android:onClick="goBack" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mianliner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"></LinearLayout>
 </android.support.constraint.ConstraintLayout>

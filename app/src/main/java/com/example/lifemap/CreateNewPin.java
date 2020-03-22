@@ -7,23 +7,26 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
+import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Matrix;
+import android.graphics.Typeface;
+import android.media.ExifInterface;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +42,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.SQLData;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,7 +65,8 @@ public class CreateNewPin extends AppCompatActivity {
     Bitmap markerImageForEdit;
     String markerImageUuid; // 標記圖片UUID
     String errorMessage;    // 錯誤訊息
-    String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/captureImage/";
+    String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/captureImage/";// GPS
+    DatabaseExcute databaseExcute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,16 @@ public class CreateNewPin extends AppCompatActivity {
         TextView dateTv =  findViewById(R.id.dateTv);
         dateTv.setText(today);
 
+        TextView toolbarText = (TextView) findViewById(R.id.toolbarText_createNewPin);
+        AssetManager mgr=getAssets();//得到AssetManager
+        Typeface tf=Typeface.createFromAsset(mgr, "fonts/jf-open.ttf");//根據路徑得到Typeface
+        toolbarText.setTypeface(tf);//設定字型
+
+        // 取消 ActionBar
+        getSupportActionBar().hide();
+        // 取消狀態欄
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     // 開啟 Google Map
@@ -146,10 +159,6 @@ public class CreateNewPin extends AppCompatActivity {
         if(Activity.RESULT_OK == resultCode) {
             // 拍照
             if(100 == requestCode) {
-                if( null != resultPicture && !resultPicture.equals(resultPicture)) {
-                    resultPicture.recycle();
-                    resultPicture = null;
-                }
                 Bitmap bmp = getSmallBitmap(dir + "capture.jpeg");
 //                Bitmap bmp = readFile(new File(dir + "capture.jpeg"));
                 if (null != bmp) {
@@ -157,11 +166,6 @@ public class CreateNewPin extends AppCompatActivity {
                     // 開啟"定位"按鈕
                     Button positioningBtn = (Button) findViewById(R.id.positioningBtn);
                     positioningBtn.setEnabled(true);
-
-//                    File markerImageFile = new File(dir + "capture.jpeg");
-//                    if(markerImageFile.exists()) {
-//                        markerImageFile.delete();
-//                    }
                 }
             }
             // GPS
@@ -172,9 +176,15 @@ public class CreateNewPin extends AppCompatActivity {
             }
         } else {
             if(100 == requestCode) {
-                Toast.makeText(this, "沒有拍到照片", Toast.LENGTH_LONG).show();
+                String result = getApplicationContext().getResources().getString(R.string.take_picture_fail);
+                Toast toast = Toast.makeText(CreateNewPin.this, result, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             } else if(101 == requestCode) {
-                Toast.makeText(this, "GPS返回", Toast.LENGTH_LONG).show();
+                String result = getApplicationContext().getResources().getString(R.string.gps_fail);
+                Toast toast = Toast.makeText(CreateNewPin.this, result, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             }
         }
     }
@@ -182,15 +192,15 @@ public class CreateNewPin extends AppCompatActivity {
     // Picker View
     public void selectCountry(View view) {
         LayoutInflater inflater = LayoutInflater.from(CreateNewPin.this);
-        final View v = inflater.inflate(R.layout.pickerview_country, null);
+        View countryPickerView = getLayoutInflater().inflate(R.layout.pickerview_country, null);
         final String[] selected = new String[1];
-        country_pv  = (PickerView)  v.findViewById(R.id.country_pv);
+        country_pv  = (PickerView)  countryPickerView.findViewById(R.id.country_pv);
         List data  = new ArrayList();
-        data.add("台灣");
         data.add("日本");
         data.add("南韓");
         data.add("英國");
         data.add("美國");
+        data.add("台灣");
         data.add("越南");
         data.add("中國");
         data.add("法國");
@@ -208,19 +218,30 @@ public class CreateNewPin extends AppCompatActivity {
             }
         });
 
+        AssetManager mgr=getAssets();//得到AssetManager
+        Typeface tf=Typeface.createFromAsset(mgr, "fonts/jf-open.ttf");//根據路徑得到Typeface
+
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateNewPin.this);
-        dialog.setTitle("國家選擇");
-        dialog.setMessage("請選擇目前所在國家");
-        dialog.setView(v);
-        dialog.setNegativeButton("NO",new DialogInterface.OnClickListener() {
+        dialog.setView(countryPickerView);
+        TextView dialogTitle = (TextView) countryPickerView.findViewById(R.id.tvTitle_pickerView);
+        dialogTitle.setTypeface(tf);//設定字型
+        dialogTitle.setText(getApplicationContext().getResources().getString(R.string.pickerView_title_country));
+        TextView dialogInfo = (TextView) countryPickerView.findViewById(R.id.tvInfo_pickerView);
+        dialogInfo.setTypeface(tf);//設定字型
+        dialogInfo.setText(getApplicationContext().getResources().getString(R.string.pickerView_info_country));
+
+        dialog.setNegativeButton(getApplicationContext().getResources().getString(R.string.no),new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
                 // TODO Auto-generated method stub
-                Toast.makeText(CreateNewPin.this, "未做修改",Toast.LENGTH_SHORT).show();
+                String result = getApplicationContext().getResources().getString(R.string.edit_none);
+                Toast toast = Toast.makeText(CreateNewPin.this, result, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             }
 
         });
-        dialog.setPositiveButton("YES",new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton(getApplicationContext().getResources().getString(R.string.yes),new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
                 // TODO Auto-generated method stub
@@ -256,28 +277,12 @@ public class CreateNewPin extends AppCompatActivity {
                     button.setText("加拿大");
                 }
 
-                Toast.makeText(CreateNewPin.this, "選擇:"+result,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(CreateNewPin.this, "選擇:"+result,Toast.LENGTH_SHORT).show();
             }
 
         });
         dialog.show();
 
-    }
-
-    // 建立資料庫
-    public void checkAndCreateDB() {
-        // 開啟或建立資料庫
-        db = openOrCreateDatabase(db_name, Context.MODE_PRIVATE, null);
-        String createTable = "CREATE TABLE IF NOT EXISTS " + tb_name +
-                "(title VARCHAR(15), " +
-                "date VARCHAR(10), " +
-                "country VARCHAR(20), " +
-                "markerStyle VARCHAR(4), " +
-                "markerType VARCHAR(4), " +
-                "markerImageUuid VARCHAR(40), " +
-                "longitude DOUBLE(20), " +
-                "latitude DOUBLE(20))" ;
-        db.execSQL(createTable);
     }
 
     // 寫入資料庫
@@ -321,7 +326,17 @@ public class CreateNewPin extends AppCompatActivity {
 
     // 建立存放圖片的資料夾 & 存放圖片
     public void saveMarkerImage() {
-        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/markerImage/";
+
+        // Check LifeMap Folder Exist
+        String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/";
+        File mainFile = new File(dirMain);
+
+        // 資料夾是否存在，不存在則建立資料夾
+        if(!mainFile.exists()) {
+            mainFile.mkdir();
+        }
+
+        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/";
         File markerImageFile = new File(dir);
         markerImageUuid = UUID.randomUUID().toString();
 
@@ -420,7 +435,10 @@ public class CreateNewPin extends AppCompatActivity {
         // 必填檢核
         if(checkKeyValue()) {
             // 資料庫建立
-            checkAndCreateDB();
+            //checkAndCreateDB();
+            db = openOrCreateDatabase(db_name, Context.MODE_PRIVATE, null);
+            databaseExcute = new DatabaseExcute();
+            databaseExcute.checkAndCreateDB(db, tb_name);
             // 儲存 MarkerImage
             if (!hasPermission()) {
                 if (needCheckPermission()) {
@@ -434,6 +452,10 @@ public class CreateNewPin extends AppCompatActivity {
             }
             // 寫入資料庫
             writeDB();
+            String result = getApplicationContext().getResources().getString(R.string.create_success);
+            Toast toast = Toast.makeText(CreateNewPin.this, result, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
             finish();
         } else {
             AlertDialog.Builder dialog = new AlertDialog.Builder(CreateNewPin.this);
@@ -477,21 +499,85 @@ public class CreateNewPin extends AppCompatActivity {
             final int widthRatio = Math.round((float) width / (float) reqWidth);
             inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
         }
+        Log.d("calculateInSampleSize", String.valueOf(inSampleSize));
         return inSampleSize;
     }
 
     // 根據路徑獲得圖片並壓縮，返回bitmap用於顯示
     public static Bitmap getSmallBitmap(String filePath) {
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, options);
+        try {
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(filePath, options);
 
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, 100, 330); // 480-800
+            // Calculate inSampleSize
+           // options.inSampleSize = calculateInSampleSize(options, 100, 330); // 480-800--100 330
 
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
+            int yRatio = (int) Math.ceil(options.outHeight / 500);
+            int xRatio = (int) Math.ceil(options.outWidth / 500);
+            if (yRatio > 1 || xRatio > 1) {
+                if (yRatio > xRatio) {
+                    options.inSampleSize = yRatio;
+                } else {
+                    options.inSampleSize = xRatio;
+                }
+            }
+            Log.d("XX-xRatio", String.valueOf(options.outHeight));
+            Log.d("XX-yRatio", String.valueOf(options.outWidth));
+            Log.d("XX-getSmallBitmap", String.valueOf(options.inSampleSize));
 
-        return BitmapFactory.decodeFile(filePath, options);
+            // Decode bitmap with inSampleSize set
+            options.inJustDecodeBounds = false;
+
+            int degree = readPictureDegree(filePath);
+            Bitmap editBitmap = BitmapFactory.decodeFile(filePath, options);
+            Bitmap newbitmap = rotaingImageView(degree, editBitmap);
+            return newbitmap;
+        } catch (OutOfMemoryError e) {
+            Log.d("getSmallBitmap-", "OutOfMemoryError");
+            return null;
+        }
+    }
+
+    /**
+     * 讀取圖片屬性：旋轉的角度
+     * @param path 圖片絕對路徑
+     * @return degree旋轉的角度
+     */
+    public static int readPictureDegree(String path) {
+        int degree  = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return degree;
+    }
+    /*
+     * 旋轉圖片
+     * @param angle
+     * @param bitmap
+     * @return Bitmap
+     */
+    public static Bitmap rotaingImageView(int angle , Bitmap bitmap) {
+        //旋轉圖片 動作
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        // 建立新的圖片
+        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return resizedBitmap;
     }
 }
