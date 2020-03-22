@@ -5,23 +5,35 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lifemap.DIY_Kit.ViewAdapterForPins;
 import com.example.lifemap.model_view.PinDetail;
 import com.example.lifemap.DatabaseExcute;
 
+import org.w3c.dom.Text;
+
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +48,13 @@ public class EditPins extends AppCompatActivity {
     List countryList = new ArrayList();
     List markerTypeList = new ArrayList();
     List markerImageUuidList = new ArrayList();
+    List longitudeList = new ArrayList();
+    List latitudeList = new ArrayList();
     int choosePosition = 0;
     private DatabaseExcute databaseExcute;
+    String title_search = "";
+    String country_search = "";
+    String type_search = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +68,13 @@ public class EditPins extends AppCompatActivity {
         // 讀取傳入參數
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        String title_search = intent.getStringExtra("title_search");
-        String country_search = intent.getStringExtra("country_search");
-        String type_search = intent.getStringExtra("type_search");
+        title_search = intent.getStringExtra("title_search");
+        country_search = intent.getStringExtra("country_search");
+        type_search = intent.getStringExtra("type_search");
+
+        databaseExcute = new DatabaseExcute();
+        db = openOrCreateDatabase(db_name, Context.MODE_PRIVATE, null);
+        databaseExcute.checkAndCreateDB(db, tb_name);
 
         queryPinDB(title_search, country_search, type_search);
         ListView listView = (ListView) findViewById(R.id.pin_listView);
@@ -61,6 +82,25 @@ public class EditPins extends AppCompatActivity {
         adapter = new ViewAdapterForPins(EditPins.this,titleList, dateList, countryList, markerTypeList, markerImageUuidList);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(onClickListView);
+
+        // 查無資料則鎖住編輯與刪除按鈕
+        if (0 == listView.getAdapter().getCount()) {
+            Button editBtn = (Button) findViewById(R.id.editBtn);
+            editBtn.setEnabled(false);
+            Button deleteBtn = (Button) findViewById(R.id.deleteBtn);
+            deleteBtn.setEnabled(false);
+        }
+
+        TextView toolbarText = (TextView) findViewById(R.id.toolbarText_showPin);
+        AssetManager mgr=getAssets();//得到AssetManager
+        Typeface tf=Typeface.createFromAsset(mgr, "fonts/jf-open.ttf");//根據路徑得到Typeface
+        toolbarText.setTypeface(tf);//設定字型
+
+        // 取消 ActionBar
+        getSupportActionBar().hide();
+        // 取消狀態欄
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     /***
@@ -73,7 +113,11 @@ public class EditPins extends AppCompatActivity {
             adapter.setCurrentItem(position);
             adapter.setClick(true);
             adapter.notifyDataSetChanged();
-            Toast.makeText(EditPins.this,"選擇 "+titleList.get(position), Toast.LENGTH_SHORT).show();
+            String result = getApplicationContext().getResources().getString(R.string.choose) +
+                    titleList.get(position);
+            Toast toast = Toast.makeText(EditPins.this, result, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         }
 
     };
@@ -101,6 +145,8 @@ public class EditPins extends AppCompatActivity {
                 countryList.add(cursor.getString(2));
                 markerTypeList.add(cursor.getString(4));
                 markerImageUuidList.add(cursor.getString(5));
+                longitudeList.add(cursor.getString(6));
+                latitudeList.add(cursor.getString(7));
             } while (cursor.moveToNext());
         }
         db.close();
@@ -108,11 +154,13 @@ public class EditPins extends AppCompatActivity {
 
     // 返回
     public void goBack(View view) {
-        finish();
+        finish();Intent intent = new Intent(EditPins.this, EditSearch.class);
+        startActivity(intent);
     }
 
     // 清除資料
     public void clearPinData() {
+        // Delete DB Data Info
         db = openOrCreateDatabase(db_name, 0, null);
         databaseExcute = new DatabaseExcute();
         PinDetail pinDetail = new PinDetail();
@@ -120,36 +168,66 @@ public class EditPins extends AppCompatActivity {
         pinDetail.setDate(dateList.get(choosePosition).toString());
         pinDetail.setCountry(countryList.get(choosePosition).toString());
         pinDetail.setMarkerType(markerTypeList.get(choosePosition).toString());
-        databaseExcute.delete(db,tb_name,pinDetail);
+        databaseExcute.delete(db, tb_name, pinDetail);
+
+        // Delete Image Files
+        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/";
+        File file = new File(dir + markerImageUuidList.get(choosePosition).toString() + ".png");
+        file.delete();
+        File file2 = new File(dir + markerImageUuidList.get(choosePosition).toString() + "_edit.png");
+        file2.delete();
+
         refresh();
     }
 
     // 刷新頁面
     public void refresh() {
         finish();
-        Intent intent = new Intent(EditPins.this, EditSearch.class);
+        Intent intent = new Intent(EditPins.this, EditPins.class);
+        intent.putExtra("title_search", title_search);
+        intent.putExtra("country_search", country_search);
+        intent.putExtra("type_search", type_search);
+        startActivityForResult(intent, 101);
         startActivity(intent);
     }
 
     // Delete Pin Dialog
     public void deletePinDialog(View view) {
+        AssetManager mgr=getAssets();//得到AssetManager
+        Typeface tf=Typeface.createFromAsset(mgr, "fonts/jf-open.ttf");//根據路徑得到Typeface
+
         AlertDialog.Builder dialog = new AlertDialog.Builder(EditPins.this);
-        dialog.setTitle("刪除確認");
-        dialog.setMessage("是否刪除:" + titleList.get(choosePosition) + "?");
-        dialog.setNegativeButton("NO",new DialogInterface.OnClickListener() {
+        View customDialog = getLayoutInflater().inflate(R.layout.dialog_delete_confirm, null);
+        dialog.setView(customDialog);
+        TextView dialogTitle = (TextView) customDialog.findViewById(R.id.tVdeleteTitle);
+        dialogTitle.setTypeface(tf);//設定字型
+        dialogTitle.setText(getApplicationContext().getResources().getString(R.string.dialog_delete_title));
+        TextView dialogInfo = (TextView) customDialog.findViewById(R.id.tVdeleteInfo);
+        dialogInfo.setTypeface(tf);//設定字型
+        dialogInfo.setText(getApplicationContext().getResources().getString(R.string.dialog_delete_info) + ":" + titleList.get(choosePosition) + " ?");
+
+        dialog.setNegativeButton(getApplicationContext().getResources().getString(R.string.no),new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
                 // TODO Auto-generated method stub
-                Toast.makeText(EditPins.this, "未做修改",Toast.LENGTH_SHORT).show();
+                String result = getApplicationContext().getResources().getString(R.string.edit_none);
+                Toast toast = Toast.makeText(EditPins.this, result, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                refresh();
             }
 
         });
-        dialog.setPositiveButton("YES",new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton(getApplicationContext().getResources().getString(R.string.yes),new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
                 // TODO Auto-generated method stub
+                String result = getApplicationContext().getResources().getString(R.string.delete_pin_success) + ":" + titleList.get(choosePosition);
+                Toast toast = Toast.makeText(EditPins.this, result, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                refresh();
                 clearPinData();
-                Toast.makeText(EditPins.this, "刪除:" + titleList.get(choosePosition),Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -165,23 +243,33 @@ public class EditPins extends AppCompatActivity {
         startActivityForResult(intentMap, 101);
     }
 
-    // Activity 回傳結果
+    // 接Activity 回傳結果
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if(Activity.RESULT_OK == resultCode) {
             if(101 == requestCode) {
-                Toast.makeText(this, "編輯成功", Toast.LENGTH_LONG).show();
+                String result = getApplicationContext().getResources().getString(R.string.edit_success);
+                Toast toast = Toast.makeText(EditPins.this, result, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
                 refresh();
             }
         } else if (Activity.RESULT_CANCELED == resultCode) {
             if(101 == requestCode) {
-                Toast.makeText(this, "沒有編輯", Toast.LENGTH_LONG).show();
+                String result = getApplicationContext().getResources().getString(R.string.edit_none);
+                Toast toast = Toast.makeText(EditPins.this, result, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             }
         } else {
             if(101 == requestCode) {
-                Toast.makeText(this, "編輯失敗", Toast.LENGTH_LONG).show();
+                String result = getApplicationContext().getResources().getString(R.string.edit_fail);
+                Toast toast = Toast.makeText(EditPins.this, result, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             }
         }
     }
+
 
 }

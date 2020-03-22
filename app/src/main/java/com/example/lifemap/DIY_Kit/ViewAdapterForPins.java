@@ -74,7 +74,7 @@ public class ViewAdapterForPins extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/markerImage/";
+        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/";
         holder.title.setText(titleList.get(position).toString() + "("+markerTypeList.get(position).toString()+")");
         holder.date.setText(dateList.get(position).toString() + "  國家:"+countryList.get(position).toString());
         String uuid = markerImageUuidList.get(position).toString();

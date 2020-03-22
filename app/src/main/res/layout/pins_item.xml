@@ -29,7 +29,8 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="4dp"
                     android:layout_weight="0.5"
-                    tools:srcCompat="@tools:sample/avatars" />
+                    tools:srcCompat="@tools:sample/avatars"
+                    android:fontFamily="@font/jf_open"/>
 
                 <LinearLayout
                     android:id="@+id/linearLayout"
@@ -48,14 +49,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:fontFamily="@font/jf_open"/>
 
                     <TextView
                         android:id="@+id/date_Tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:fontFamily="@font/jf_open"/>
 
                 </LinearLayout>
 

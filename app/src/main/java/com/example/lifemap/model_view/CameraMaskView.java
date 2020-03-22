@@ -10,6 +10,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 public class CameraMaskView extends View {
@@ -67,11 +68,11 @@ public class CameraMaskView extends View {
 
         int width = (int) (w * 0.7f);
         int height = (int) (h * 0.9f);
-
+        Log.d("XX-onSizeChanged", w+","+h);
         int left = (w - width) / 2;
         int top = (h - height) / 2;
         int right = width + left;
-        int bottom = h/2 ;
+        int bottom = h/2 - top ;
 
         frame.left = left;
         frame.top = top;

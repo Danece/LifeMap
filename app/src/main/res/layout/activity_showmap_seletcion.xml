@@ -6,12 +6,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_showMap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@color/colorBarText"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/toolbarText_showMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/actionbar_showMap"
+            android:textSize="24sp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="15dp"></TextView>
+    </android.support.v7.widget.Toolbar>
+
     <TableLayout
         android:id="@+id/tableLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_showMap">
 
         <TableRow
             android:layout_width="match_parent"
@@ -26,7 +49,8 @@
                 android:text="@string/title_country"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:fontFamily="@font/jf_open"/>
 
             <CheckBox
                 android:id="@+id/country_all_cb"
@@ -35,7 +59,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/all"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
         </TableRow>
 
         <TableRow
@@ -49,7 +74,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/taiwan"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
 
             <CheckBox
                 android:id="@+id/japan_cb"
@@ -58,7 +84,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/japan"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
 
             <CheckBox
                 android:id="@+id/south_korea_cb"
@@ -67,7 +94,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/south_korea"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
         </TableRow>
 
         <TableRow
@@ -81,7 +109,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/united_kingdom"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
 
             <CheckBox
                 android:id="@+id/usa_cb"
@@ -90,7 +119,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/united_states_of_america"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
 
             <CheckBox
                 android:id="@+id/china_cb"
@@ -99,7 +129,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/china"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
         </TableRow>
 
         <TableRow
@@ -113,7 +144,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/france"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
 
             <CheckBox
                 android:id="@+id/canada_cb"
@@ -122,7 +154,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/canada"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
 
             <CheckBox
                 android:id="@+id/vietnam_cb"
@@ -131,7 +164,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/vietnam"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
 
         </TableRow>
     </TableLayout>
@@ -140,7 +174,11 @@
         android:id="@+id/tableLayout4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tableLayout3">
 
         <TableRow
@@ -156,7 +194,8 @@
                 android:text="@string/title_pin_type"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:fontFamily="@font/jf_open"/>
 
             <CheckBox
                 android:id="@+id/marker_type_all_cb"
@@ -165,7 +204,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/all"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
         </TableRow>
 
         <TableRow
@@ -179,7 +219,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/selection_attraction"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
 
             <CheckBox
                 android:id="@+id/food_cb"
@@ -188,33 +229,61 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/selection_food"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
         </TableRow>
 
     </TableLayout>
 
-    <Button
-        android:id="@+id/button7"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:background="@drawable/show_click"
-        android:onClick="showMap"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout4" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout4">
 
-    <Button
-        android:id="@+id/button8"
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/return_click"
+            android:onClick="goBackByShowMap" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/show_click"
+            android:onClick="showMap" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/loadingProcessBar_showMap"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/return_click"
-        android:onClick="goBackByShowMap"
+        android:layout_marginTop="320dp"
+        android:indeterminateBehavior="repeat"
+        android:indeterminateDrawable="@drawable/ring_rotate"
+        android:indeterminateDuration="1500"
+        android:indeterminateOnly="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout4" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>

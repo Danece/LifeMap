@@ -14,7 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
+//import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -22,6 +22,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -42,7 +43,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.location.LocationListener;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +125,10 @@ public class MapsActivity extends FragmentActivity
         if (entrance.equals("showPins")) {
             refreshBtn.setVisibility(View.INVISIBLE );
         }
+        // 取消狀態欄
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
     }
 
     // 建立 Google API 用戶端物件
@@ -187,11 +194,17 @@ public class MapsActivity extends FragmentActivity
         if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     MY_PERMISSION_ACCESS_COARSE_LOCATION);
-            return;
+            //return;
         }
+
         Location location = lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        lat = location.getLatitude(); // 經度
-        lng = location.getLongitude();// 緯度
+        if (null != location) {
+            lat = location.getLatitude(); // 經度
+            lng = location.getLongitude();// 緯度
+        } else {
+            lat = 0;
+            lng = 0;
+        }
         // 如果記事已經儲存座標
         if (0.0 != lat && 0.0 != lng) {
             // 建立座標物件
@@ -216,15 +229,19 @@ public class MapsActivity extends FragmentActivity
                     MY_PERMISSION_ACCESS_COARSE_LOCATION);
             return;
         }
-        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/markerImage/";
+        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/";
         if (titleList.size() > 0 && null != titleList) {
             for (int i = 0; i < titleList.size(); i++) {
                 // 建立座標物件
                 Double latitude = Double.parseDouble(latitudeList.get(i).toString());
                 Double longitude = Double.parseDouble(longitudeList.get(i).toString());
                 LatLng itemPlace = new LatLng(latitude, longitude);
-                markerIcon = BitmapFactory.decodeFile(dir + markerImageUuidList.get(i).toString() + ".png");
-                mClusterManager.addItem(new MyClusterItem(titleList.get(i).toString(), dateList.get(i).toString(),itemPlace,markerIcon));
+
+                File markerImage = new File(dir + markerImageUuidList.get(i).toString() + ".png");
+                if (markerImage.exists()) {
+                    markerIcon = BitmapFactory.decodeFile(dir + markerImageUuidList.get(i).toString() + ".png");
+                    mClusterManager.addItem(new MyClusterItem(titleList.get(i).toString(), dateList.get(i).toString(),itemPlace,markerIcon));
+                }
             }
         }
         // 取目前位置經緯度資訊
@@ -235,7 +252,7 @@ public class MapsActivity extends FragmentActivity
         LatLng itemPlace = new LatLng(lat, lng);
         moveMap(itemPlace);
         // 關閉更新Manager
-        lms.removeUpdates(this);
+        //lms.removeUpdates(this);
     }
 
     // 移動地圖到指定位置
@@ -313,7 +330,7 @@ public class MapsActivity extends FragmentActivity
         moveMap(latLng);
     }
 
-    @Override
+    /*@Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
 
     }
@@ -326,7 +343,7 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onProviderDisabled(String provider) {
 
-    }
+    }*/
 
     // Google API 生命週期控制-Resume
     @Override
@@ -349,7 +366,7 @@ public class MapsActivity extends FragmentActivity
                 // for ActivityCompat#requestPermissions for more details.
                 return;
             }
-            lms.requestLocationUpdates(best, 5000, 5, this);
+            //lms.requestLocationUpdates(best, 5000, 5, this);
         }
     }
 

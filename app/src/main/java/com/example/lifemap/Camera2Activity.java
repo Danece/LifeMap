@@ -3,12 +3,11 @@ package com.example.lifemap;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
-import android.graphics.drawable.BitmapDrawable;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -20,7 +19,6 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -34,15 +32,12 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.Button;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.apache.http.util.EncodingUtils;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -50,12 +45,12 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 public class Camera2Activity extends AppCompatActivity {
 
     private ImageView ivCapture;
     private TextureView textureView;
+    private ProgressBar mLoadingBar;
 
     private static final SparseIntArray ORIENTATION = new SparseIntArray();
     static {
@@ -89,7 +84,7 @@ public class Camera2Activity extends AppCompatActivity {
 
         @Override
         public void onDisconnected(@NonNull CameraDevice camera) {
-
+            closeCameraDevice();
         }
 
         @Override
@@ -105,7 +100,10 @@ public class Camera2Activity extends AppCompatActivity {
         setContentView(R.layout.camera);
 
         textureView = (TextureView) findViewById(R.id.textureView);
-
+        // 設定螢幕不旋轉
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+        // 設定螢幕直向顯示
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
 
@@ -118,7 +116,15 @@ public class Camera2Activity extends AppCompatActivity {
 
         });
 
+        // Loading close
+        mLoadingBar = (ProgressBar) this.findViewById(R.id.loadingProcessBar_camere);
+        mLoadingBar.setVisibility(View.GONE);
 
+        // 取消 ActionBar
+        getSupportActionBar().hide();
+        // 取消狀態欄
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     private void takePicture() {
@@ -126,7 +132,10 @@ public class Camera2Activity extends AppCompatActivity {
             return;
         }
 
-        final String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/captureImage/";
+        // Loading open
+        mLoadingBar.setVisibility(View.VISIBLE);
+
+        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/captureImage/";
         File markerImageFile = new File(dir);
         // 資料夾是否存在，不存在則建立資料夾
         if(!markerImageFile.exists()) {
@@ -134,7 +143,6 @@ public class Camera2Activity extends AppCompatActivity {
         } else {
             File file_old = new File(dir + "capture.jpeg");
             file_old.delete();
-//            deleteAll(markerImageFile);
         }
 
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
@@ -155,7 +163,8 @@ public class Camera2Activity extends AppCompatActivity {
                 height = jpegSizes[0].getHeight();
             }
 
-            ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);List<Surface> outputSurface = new ArrayList<>(2);
+            ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
+            List<Surface> outputSurface = new ArrayList<>(2);
             outputSurface.add(reader.getSurface());
             outputSurface.add(new Surface(textureView.getSurfaceTexture()));
 
@@ -164,27 +173,26 @@ public class Camera2Activity extends AppCompatActivity {
             captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
 
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
-            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATION.get(rotation));
-
-
-
-//            file = new File(Environment.getExternalStorageDirectory()+"/"+ UUID.randomUUID().toString()+".jpeg");
+            //captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATION.get(rotation));
+            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation(rotation));
             file = new File(dir + "capture.jpeg");
+
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
                     Image image = null;
                     try {
-                        image = reader.acquireLatestImage();
+                        if (1 < reader.getMaxImages()) {
+                            image = reader.acquireNextImage();
+                        } else {
+                            image = reader.acquireLatestImage();
+                        }
                         ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                         byte[] bytes = new byte[buffer.capacity()];
                         buffer.get(bytes);
                         save(bytes);
                     }
-                    catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    catch (IOException e) {
+                    catch (Exception e) {
                         e.printStackTrace();
                     }
                     finally {
@@ -212,6 +220,7 @@ public class Camera2Activity extends AppCompatActivity {
                 @Override
                 public void onCaptureCompleted (@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result){
                     super.onCaptureCompleted(session, request, result);
+                    String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/captureImage/";
                     file = new File(dir + "capture.jpeg");
                     Toast.makeText(Camera2Activity.this, "Saved "+file, Toast.LENGTH_SHORT).show();
                     createCameraPreview();
@@ -224,7 +233,6 @@ public class Camera2Activity extends AppCompatActivity {
                     try {
                         // cameraCaptureSession+s
                         session.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
-
                     } catch (CameraAccessException e) {
                         e.printStackTrace();
                     }
@@ -235,13 +243,12 @@ public class Camera2Activity extends AppCompatActivity {
 
                 }
             }, mBackgroundHandler);
-
-            Thread.sleep(2000);
+            Thread.sleep(1000);
             goBack();
         } catch (CameraAccessException e) {
             e.printStackTrace();
 
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -284,6 +291,7 @@ public class Camera2Activity extends AppCompatActivity {
 
         try {
             cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, mBackgroundHandler);
+
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -297,7 +305,6 @@ public class Camera2Activity extends AppCompatActivity {
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             assert null != map;
             imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
-
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[] {
                         Manifest.permission.CAMERA,
@@ -306,8 +313,6 @@ public class Camera2Activity extends AppCompatActivity {
                 return;
             }
             manager.openCamera(cameraId, stateCallBack, null);
-
-
 
         } catch (CameraAccessException e)  {
             e.printStackTrace();
@@ -361,6 +366,7 @@ public class Camera2Activity extends AppCompatActivity {
     @Override
     protected void onPause() {
         stopBackgroundThread();
+        closeCameraDevice();
         super.onPause();
     }
 
@@ -386,5 +392,28 @@ public class Camera2Activity extends AppCompatActivity {
         Intent intent = new Intent(Camera2Activity.this, CreateNewPin.class);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    //獲取圖片應該旋轉的角度，使圖片豎直
+    public int getOrientation(int rotation) {
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                return 90;
+            case Surface.ROTATION_90:
+                return 0;
+            case Surface.ROTATION_180:
+                return 270;
+            case Surface.ROTATION_270:
+                return 180;
+            default:
+                return 0;
+        }
+    }
+
+    void closeCameraDevice() {
+        if (cameraDevice != null) {
+            cameraDevice.close();
+            cameraDevice = null;
+        }
     }
 }

@@ -3,19 +3,24 @@ package com.example.lifemap;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lifemap.DIY_Kit.PickerView;
@@ -30,8 +35,8 @@ public class EditActivity extends AppCompatActivity {
     private DatabaseExcute databaseExcute;
     static final String db_name = "pinDB";      // 資料庫名稱
     static final String tb_name = "pinDetail";  // 資料表名稱
-    private PinDetail oldInfo;
     PickerView country_pv ;
+    private PinDetail oldInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,52 +80,35 @@ public class EditActivity extends AppCompatActivity {
             marker_type_group.check(findViewById(R.id.food_radioButton).getId());
         }
 
-
         oldInfo = new PinDetail();
         oldInfo.setTitle(intent.getStringExtra("title"));
         oldInfo.setCountry(intent.getStringExtra("country"));
         oldInfo.setMarkerType(intent.getStringExtra("markerType"));
-    }
 
-    // 更新
-    public void doUpdate(View view) {
-        EditText title = (EditText) findViewById(R.id.titleEt);
-        Button button = (Button) findViewById(R.id.selectCountryBtn);
-        String country =  button.getText().toString();
-        String markerType = null;
-        RadioGroup markerTypeGroup = (RadioGroup) findViewById(R.id.marker_type_group);
-        switch (markerTypeGroup.getCheckedRadioButtonId()) {
-            case R.id.attractions_radioButton:
-                markerType = "景點";
-                break;
-            case R.id.food_radioButton:
-                markerType = "美食";
-                break;
-        }
+        TextView toolbarText = (TextView) findViewById(R.id.toolbarText_edit);
+        AssetManager mgr=getAssets();//得到AssetManager
+        Typeface tf=Typeface.createFromAsset(mgr, "fonts/jf-open.ttf");//根據路徑得到Typeface
+        toolbarText.setTypeface(tf);//設定字型
 
-        db = openOrCreateDatabase(db_name, 0, null);
-        databaseExcute = new DatabaseExcute();
-        PinDetail newInfo = new PinDetail();
-        newInfo.setTitle(title.getText().toString());
-        newInfo.setCountry(country);
-        newInfo.setMarkerType(markerType);
-        databaseExcute.updateForEditPinInfo(db,tb_name,oldInfo,newInfo);
-        setResult(RESULT_OK, null);
-        finish();
+        // 取消 ActionBar
+        getSupportActionBar().hide();
+        // 取消狀態欄
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     // 國家選單
     public void selectCountry(View view) {
         LayoutInflater inflater = LayoutInflater.from(EditActivity.this);
-        final View v = inflater.inflate(R.layout.pickerview_country, null);
+        View countryPickerView = getLayoutInflater().inflate(R.layout.pickerview_country, null);
         final String[] selected = new String[1];
-        country_pv  = (PickerView)  v.findViewById(R.id.country_pv);
+        country_pv  = (PickerView)  countryPickerView.findViewById(R.id.country_pv);
         List data  = new ArrayList();
-        data.add("台灣");
         data.add("日本");
         data.add("南韓");
         data.add("英國");
         data.add("美國");
+        data.add("台灣");
         data.add("越南");
         data.add("中國");
         data.add("法國");
@@ -131,28 +119,35 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void  onSelect ( String  text )
             {
-                selected[0] = text;
-                Toast. makeText ( EditActivity.this , "選擇了" +  text ,
-                        Toast . LENGTH_SHORT ). show ();
+        selected[0] = text;
             }
         });
+
+        AssetManager mgr=getAssets();//得到AssetManager
+        Typeface tf=Typeface.createFromAsset(mgr, "fonts/jf-open.ttf");//根據路徑得到Typeface
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(EditActivity.this);
-        dialog.setTitle("國家選擇");
-        dialog.setMessage("請選擇目前所在國家");
-        dialog.setView(v);
-        dialog.setNegativeButton("NO",new DialogInterface.OnClickListener() {
+        dialog.setView(countryPickerView);
+        TextView dialogTitle = (TextView) countryPickerView.findViewById(R.id.tvTitle_pickerView);
+        dialogTitle.setTypeface(tf);//設定字型
+        dialogTitle.setText(getApplicationContext().getResources().getString(R.string.pickerView_title_country));
+        TextView dialogInfo = (TextView) countryPickerView.findViewById(R.id.tvInfo_pickerView);
+        dialogInfo.setTypeface(tf);//設定字型
+        dialogInfo.setText(getApplicationContext().getResources().getString(R.string.pickerView_info_country));
+
+        dialog.setNegativeButton(getApplicationContext().getResources().getString(R.string.no),new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-                // TODO Auto-generated method stub
-                Toast.makeText(EditActivity.this, "未做修改",Toast.LENGTH_SHORT).show();
+            String result = getApplicationContext().getResources().getString(R.string.edit_none);
+            Toast toast = Toast.makeText(EditActivity.this, result, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
             }
 
         });
-        dialog.setPositiveButton("YES",new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton(getApplicationContext().getResources().getString(R.string.yes),new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-                // TODO Auto-generated method stub
                 String result =  country_pv.getSelected();
                 ImageView imageView = (ImageView) findViewById(R.id.countryLogoIv);
                 Button button = (Button) findViewById(R.id.selectCountryBtn);
@@ -191,6 +186,33 @@ public class EditActivity extends AppCompatActivity {
 
     // 返回
     public void goBack(View view) {
+        finish();
+    }
+
+    // 更新
+    public void doUpdate(View view) {
+        EditText title = (EditText) findViewById(R.id.titleEt);
+        Button button = (Button) findViewById(R.id.selectCountryBtn);
+        String country =  button.getText().toString();
+        String markerType = null;
+        RadioGroup markerTypeGroup = (RadioGroup) findViewById(R.id.marker_type_group);
+        switch (markerTypeGroup.getCheckedRadioButtonId()) {
+            case R.id.attractions_radioButton:
+                markerType = "景點";
+                break;
+            case R.id.food_radioButton:
+                markerType = "美食";
+                break;
+        }
+
+        db = openOrCreateDatabase(db_name, 0, null);
+        databaseExcute = new DatabaseExcute();
+        PinDetail newInfo = new PinDetail();
+        newInfo.setTitle(title.getText().toString());
+        newInfo.setCountry(country);
+        newInfo.setMarkerType(markerType);
+        databaseExcute.updateForEditPinInfo(db,tb_name,oldInfo,newInfo);
+        setResult(RESULT_OK, null);
         finish();
     }
 }

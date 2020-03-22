@@ -4,6 +4,7 @@
     <!--android:versionCode="2"-->
     <!--android:versionName="2.1.0"-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -13,12 +14,12 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_myself"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:hardwareAccelerated ="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/MyTheme">
             <activity android:name=".CreateNewPin" android:label="@string/actionbar_createPins"></activity>
             <activity android:name=".EditPins" android:label="@string/actionbar_showPins"></activity>
             <activity android:name=".EditActivity" android:label="@string/actionbar_editPins"></activity>

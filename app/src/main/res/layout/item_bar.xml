@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/itembar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#F1A039"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            android:id="@+id/itemBar_title"
+            android:layout_width="match_parent"
+            android:layout_height="40dip"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="1.0"
+            android:fontFamily="@font/jf_open"
+
+            android:gravity="center|left"
+            android:text="Title : "
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/item_img_title"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="10dp"
+            android:contentDescription="@string/backup_guideContent"
+            android:src="@drawable/item_unpressed"/>
+
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:layout_constraintTop_toBottomOf="@+id/itembar">
+
+        <LinearLayout
+            android:id="@+id/itemBar_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FAE6C8"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="20dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/itembar"></LinearLayout>
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>

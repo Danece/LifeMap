@@ -6,15 +6,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_editSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:titleTextColor="@color/colorBarText"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/toolbarText_editSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/actionbar_editSearch"
+            android:textSize="24sp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="15dp"></TextView>
+    </android.support.v7.widget.Toolbar>
+
     <TableLayout
         android:id="@+id/tableLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_editSearch">
 
         <TableRow
             android:id="@+id/title"
@@ -35,7 +52,8 @@
                 android:text="@string/pinTitle"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:fontFamily="@font/jf_open"/>
 
             <EditText
                 android:id="@+id/titleEt"
@@ -47,7 +65,8 @@
                 android:focusableInTouchMode="true"
                 android:inputType="textPersonName"
                 android:maxLength="15"
-                android:padding="2dp" />
+                android:padding="2dp"
+                android:fontFamily="@font/jf_open"/>
 
         </TableRow>
 
@@ -58,7 +77,6 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tableLayout">
@@ -72,7 +90,8 @@
             android:text="@string/title_country"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/jf_open"/>
 
         <Button
             android:id="@+id/select_country_btn"
@@ -112,7 +131,8 @@
             android:text="@string/title_pin_type"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/jf_open"/>
 
         <Spinner
             android:id="@+id/select_type"
@@ -122,43 +142,59 @@
             android:layout_weight="1"
             android:entries="@array/type_selections"
             android:spinnerMode="dropdown"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            />
 
     </LinearLayout>
 
-    <TableLayout
-        android:id="@+id/tableLayout2"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/type_layout">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <Button
+            android:id="@+id/back_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/return_click"
+            android:onClick="goBack" />
 
-            <Button
-                android:id="@+id/back_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="30dp"
-                android:layout_weight="1"
-                android:background="@drawable/return_click"
-                android:onClick="goBack" />
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
-            <Button
-                android:id="@+id/query_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_weight="1"
-                android:background="@drawable/seasrch_click"
-                android:onClick="editPins" />
+        <Button
+            android:id="@+id/query_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/seasrch_click"
+            android:onClick="goEditPins" />
+    </LinearLayout>
 
-        </TableRow>
-
-    </TableLayout>
-
+    <ProgressBar
+        android:id="@+id/loadingProcessBar_search"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="320dp"
+        android:indeterminateBehavior="repeat"
+        android:indeterminateDrawable="@drawable/ring_rotate"
+        android:indeterminateDuration="1500"
+        android:indeterminateOnly="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 </android.support.constraint.ConstraintLayout>

@@ -7,31 +7,47 @@
     android:clipChildren="true"
     tools:context=".CreateNewPin">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_createNewPin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:titleTextColor="@color/colorBarText"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/toolbarText_createNewPin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/actionbar_createPins"
+            android:textSize="24sp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="15dp"></TextView>
+    </android.support.v7.widget.Toolbar>
+
     <TextView
         android:id="@+id/dateTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="2"
+        android:fontFamily="@font/jf_open"
         android:padding="2dp"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TableLayout
         android:id="@+id/tableLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_createNewPin">
 
         <TableRow
             android:id="@+id/title"
@@ -52,7 +68,8 @@
                 android:text="@string/pinTitle"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:fontFamily="@font/jf_open"/>
 
             <EditText
                 android:id="@+id/titleEt"
@@ -64,7 +81,8 @@
                 android:focusableInTouchMode="true"
                 android:inputType="textPersonName"
                 android:maxLength="15"
-                android:padding="2dp" />
+                android:padding="2dp"
+                android:fontFamily="@font/jf_open"/>
 
         </TableRow>
 
@@ -89,7 +107,8 @@
             android:text="@string/title_country"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/jf_open"/>
 
         <Button
             android:id="@+id/selectCountryBtn"
@@ -127,7 +146,8 @@
             android:text="@string/title_remark_style"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/jf_open"/>
 
         <RadioGroup
             android:id="@+id/marker_style_group"
@@ -143,7 +163,8 @@
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:text="@string/selection_cube"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
 
             <RadioButton
                 android:id="@+id/sphere_radioButton"
@@ -151,7 +172,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/selection_sphere"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:fontFamily="@font/jf_open"/>
         </RadioGroup>
     </LinearLayout>
 
@@ -204,59 +226,73 @@
         </RadioGroup>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/take_photoBtn"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/photo_click"
-        android:onClick="openCamera"
-        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pin_type_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/pin_type_layout">
 
-    <Button
-        android:id="@+id/positioningBtn"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/position_click"
-        android:enabled="false"
-        android:onClick="openGoogleMap"
-        android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/take_photoBtn"
-        app:layout_constraintTop_toBottomOf="@+id/pin_type_layout" />
+        <Button
+            android:id="@+id/take_photoBtn"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="start|right"
+            android:background="@drawable/photo_click"
+            android:onClick="openCamera"
+            android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/confirmBtn"
-        android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/positioningBtn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/position_click"
+            android:enabled="false"
+            android:onClick="openGoogleMap"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginRight="64dp"
-        android:background="@drawable/establish_click"
-        android:onClick="doConfirm"
-        android:textSize="18sp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/positioningBtn" />
-
-    <Button
-        android:id="@+id/cancelBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginLeft="64dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/cancel_click"
-        android:onClick="doCancel"
-        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/positioningBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
+        <Button
+            android:id="@+id/cancelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/cancel_click"
+            android:onClick="doCancel"
+            android:textSize="18sp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/confirmBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/establish_click"
+            android:onClick="doConfirm"
+            android:textSize="18sp" />
+    </LinearLayout>
 
 
 </android.support.constraint.ConstraintLayout>
