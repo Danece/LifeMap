@@ -6,11 +6,13 @@ import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -38,6 +40,22 @@ public class EditActivity extends AppCompatActivity {
     PickerView country_pv ;
     private PinDetail oldInfo;
 
+    // 鎖住操作返回動作
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.ECLAIR) {
+                event.startTracking();
+            } else {
+                onBackPressed(); // 是其他按鍵則再Call Back方法
+            }
+        }
+        return false;
+    }
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return super.onKeyUp(keyCode, event);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,25 +72,59 @@ public class EditActivity extends AppCompatActivity {
         Button selectCountryBtn = (Button) findViewById(R.id.selectCountryBtn);
         selectCountryBtn.setText(intent.getStringExtra("country"));
         ImageView imageView = (ImageView) findViewById(R.id.countryLogoIv);
-        if("台灣".equals(intent.getStringExtra("country"))) {
+        if(getApplicationContext().getResources().getString(R.string.taiwan).equals(intent.getStringExtra("country"))) {
             imageView.setImageResource(R.mipmap.taiwan_flag_icon);
-        } else if("日本".equals(intent.getStringExtra("country"))) {
+
+        } else if(getApplicationContext().getResources().getString(R.string.japan).equals(intent.getStringExtra("country"))) {
             imageView.setImageResource(R.mipmap.japan_flag_icon);
-        } else if("南韓".equals(intent.getStringExtra("country"))) {
+
+        } else if(getApplicationContext().getResources().getString(R.string.south_korea).equals(intent.getStringExtra("country"))) {
             imageView.setImageResource(R.mipmap.south_korea_flag_icon);
-        } else if("英國".equals(intent.getStringExtra("country"))) {
+
+        } else if(getApplicationContext().getResources().getString(R.string.united_kingdom).equals(intent.getStringExtra("country"))) {
             imageView.setImageResource(R.mipmap.united_kingdom_flag_icon);
-        } else if("美國".equals(intent.getStringExtra("country"))) {
+
+        } else if(getApplicationContext().getResources().getString(R.string.united_states_of_america).equals(intent.getStringExtra("country"))) {
             imageView.setImageResource(R.mipmap.united_states_of_america_flag_icon);
-        } else if("越南".equals(intent.getStringExtra("country"))) {
+
+        } else if(getApplicationContext().getResources().getString(R.string.vietnam).equals(intent.getStringExtra("country"))) {
             imageView.setImageResource(R.mipmap.vietnam_flag_icon);
-        } else if("中國".equals(intent.getStringExtra("country"))) {
+
+        } else if(getApplicationContext().getResources().getString(R.string.china).equals(intent.getStringExtra("country"))) {
             imageView.setImageResource(R.mipmap.chin_flag_icon);
-        } else if("法國".equals(intent.getStringExtra("country"))) {
+
+        } else if(getApplicationContext().getResources().getString(R.string.france).equals(intent.getStringExtra("country"))) {
             imageView.setImageResource(R.mipmap.france_flag_icon);
-        } else if("加拿大".equals(intent.getStringExtra("country"))) {
+
+        } else if(getApplicationContext().getResources().getString(R.string.canada).equals(intent.getStringExtra("country"))) {
             imageView.setImageResource(R.mipmap.canada_flag_icon);
+
+        } else if(getApplicationContext().getResources().getString(R.string.egypt).equals(intent.getStringExtra("country"))) {
+            imageView.setImageResource(R.mipmap.egypt_flag_icon);
+
+        } else if(getApplicationContext().getResources().getString(R.string.russia).equals(intent.getStringExtra("country"))) {
+            imageView.setImageResource(R.mipmap.russia_flag_icon);
+
+        } else if(getApplicationContext().getResources().getString(R.string.germany).equals(intent.getStringExtra("country"))) {
+            imageView.setImageResource(R.mipmap.germany_flag_icon);
+
+        } else if(getApplicationContext().getResources().getString(R.string.hong_kong).equals(intent.getStringExtra("country"))) {
+            imageView.setImageResource(R.mipmap.hong_kong_flag_icon);
+
+        } else if(getApplicationContext().getResources().getString(R.string.greece).equals(intent.getStringExtra("country"))) {
+            imageView.setImageResource(R.mipmap.greece_flag_icon);
+
+        } else if(getApplicationContext().getResources().getString(R.string.new_zealand).equals(intent.getStringExtra("country"))) {
+            imageView.setImageResource(R.mipmap.new_zealand_flag_icon);
+
+        } else if(getApplicationContext().getResources().getString(R.string.austriala).equals(intent.getStringExtra("country"))) {
+            imageView.setImageResource(R.mipmap.australia_flag_icon);
+
+        } else if(getApplicationContext().getResources().getString(R.string.italy).equals(intent.getStringExtra("country"))) {
+            imageView.setImageResource(R.mipmap.italy_flag_icon);
+
         }
+
         RadioGroup marker_type_group = (RadioGroup) findViewById(R.id.marker_type_group);
         if("景點".equals(intent.getStringExtra("markerType"))) {
             marker_type_group.check(findViewById(R.id.attractions_radioButton).getId());
@@ -104,22 +156,31 @@ public class EditActivity extends AppCompatActivity {
         final String[] selected = new String[1];
         country_pv  = (PickerView)  countryPickerView.findViewById(R.id.country_pv);
         List data  = new ArrayList();
-        data.add("日本");
-        data.add("南韓");
-        data.add("英國");
-        data.add("美國");
-        data.add("台灣");
-        data.add("越南");
-        data.add("中國");
-        data.add("法國");
-        data.add("加拿大");
+        data.add(getApplicationContext().getResources().getString(R.string.japan));
+        data.add(getApplicationContext().getResources().getString(R.string.south_korea));
+        data.add(getApplicationContext().getResources().getString(R.string.united_kingdom));
+        data.add(getApplicationContext().getResources().getString(R.string.united_states_of_america));
+        data.add(getApplicationContext().getResources().getString(R.string.vietnam));
+        data.add(getApplicationContext().getResources().getString(R.string.china));
+        data.add(getApplicationContext().getResources().getString(R.string.france));
+        data.add(getApplicationContext().getResources().getString(R.string.canada));
+        data.add(getApplicationContext().getResources().getString(R.string.taiwan));
+        data.add(getApplicationContext().getResources().getString(R.string.egypt));
+        data.add(getApplicationContext().getResources().getString(R.string.austriala));
+        data.add(getApplicationContext().getResources().getString(R.string.germany));
+        data.add(getApplicationContext().getResources().getString(R.string.hong_kong));
+        data.add(getApplicationContext().getResources().getString(R.string.russia));
+        data.add(getApplicationContext().getResources().getString(R.string.italy));
+        data.add(getApplicationContext().getResources().getString(R.string.new_zealand));
+        data.add(getApplicationContext().getResources().getString(R.string.greece));
+
         country_pv . setData ( data );
         country_pv . setOnSelectListener ( new  PickerView.onSelectListener()
         {
             @Override
             public void  onSelect ( String  text )
             {
-        selected[0] = text;
+                selected[0] = text;
             }
         });
 
@@ -151,33 +212,74 @@ public class EditActivity extends AppCompatActivity {
                 String result =  country_pv.getSelected();
                 ImageView imageView = (ImageView) findViewById(R.id.countryLogoIv);
                 Button button = (Button) findViewById(R.id.selectCountryBtn);
-                if("台灣" == result) {
+                if(getApplicationContext().getResources().getString(R.string.taiwan) == result) {
                     imageView.setImageResource(R.mipmap.taiwan_flag_icon);
-                    button.setText("台灣");
-                } else if("日本" == result) {
+                    button.setText(getApplicationContext().getResources().getString(R.string.taiwan));
+
+                } else if(getApplicationContext().getResources().getString(R.string.japan) == result) {
                     imageView.setImageResource(R.mipmap.japan_flag_icon);
-                    button.setText("日本");
-                } else if("南韓" == result) {
+                    button.setText(getApplicationContext().getResources().getString(R.string.japan));
+
+                } else if(getApplicationContext().getResources().getString(R.string.south_korea) == result) {
                     imageView.setImageResource(R.mipmap.south_korea_flag_icon);
-                    button.setText("南韓");
-                } else if("英國" == result) {
+                    button.setText(getApplicationContext().getResources().getString(R.string.south_korea));
+
+                } else if(getApplicationContext().getResources().getString(R.string.united_kingdom) == result) {
                     imageView.setImageResource(R.mipmap.united_kingdom_flag_icon);
-                    button.setText("英國");
-                } else if("美國" == result) {
+                    button.setText(getApplicationContext().getResources().getString(R.string.united_kingdom));
+
+                } else if(getApplicationContext().getResources().getString(R.string.united_states_of_america) == result) {
                     imageView.setImageResource(R.mipmap.united_states_of_america_flag_icon);
-                    button.setText("美國");
-                } else if("越南" == result) {
+                    button.setText(getApplicationContext().getResources().getString(R.string.united_states_of_america));
+
+                } else if(getApplicationContext().getResources().getString(R.string.vietnam) == result) {
                     imageView.setImageResource(R.mipmap.vietnam_flag_icon);
-                    button.setText("越南");
-                } else if("中國" == result) {
+                    button.setText(getApplicationContext().getResources().getString(R.string.vietnam));
+
+                } else if(getApplicationContext().getResources().getString(R.string.china) == result) {
                     imageView.setImageResource(R.mipmap.chin_flag_icon);
-                    button.setText("中國");
-                } else if("法國" == result) {
+                    button.setText(getApplicationContext().getResources().getString(R.string.china));
+
+                } else if(getApplicationContext().getResources().getString(R.string.france) == result) {
                     imageView.setImageResource(R.mipmap.france_flag_icon);
-                    button.setText("法國");
-                } else if("加拿大" == result) {
+                    button.setText(getApplicationContext().getResources().getString(R.string.france));
+
+                } else if(getApplicationContext().getResources().getString(R.string.canada) == result) {
                     imageView.setImageResource(R.mipmap.canada_flag_icon);
-                    button.setText("加拿大");
+                    button.setText(getApplicationContext().getResources().getString(R.string.canada));
+
+                } else if(getApplicationContext().getResources().getString(R.string.egypt) == result) {
+                    imageView.setImageResource(R.mipmap.egypt_flag_icon);
+                    button.setText(getApplicationContext().getResources().getString(R.string.egypt));
+
+                } else if(getApplicationContext().getResources().getString(R.string.russia) == result) {
+                    imageView.setImageResource(R.mipmap.russia_flag_icon);
+                    button.setText(getApplicationContext().getResources().getString(R.string.russia));
+
+                } else if(getApplicationContext().getResources().getString(R.string.germany) == result) {
+                    imageView.setImageResource(R.mipmap.germany_flag_icon);
+                    button.setText(getApplicationContext().getResources().getString(R.string.germany));
+
+                } else if(getApplicationContext().getResources().getString(R.string.hong_kong) == result) {
+                    imageView.setImageResource(R.mipmap.hong_kong_flag_icon);
+                    button.setText(getApplicationContext().getResources().getString(R.string.hong_kong));
+
+                } else if(getApplicationContext().getResources().getString(R.string.greece) == result) {
+                    imageView.setImageResource(R.mipmap.greece_flag_icon);
+                    button.setText(getApplicationContext().getResources().getString(R.string.greece));
+
+                } else if(getApplicationContext().getResources().getString(R.string.new_zealand) == result) {
+                    imageView.setImageResource(R.mipmap.new_zealand_flag_icon);
+                    button.setText(getApplicationContext().getResources().getString(R.string.new_zealand));
+
+                } else if(getApplicationContext().getResources().getString(R.string.austriala) == result) {
+                    imageView.setImageResource(R.mipmap.australia_flag_icon);
+                    button.setText(getApplicationContext().getResources().getString(R.string.austriala));
+
+                } else if(getApplicationContext().getResources().getString(R.string.italy) == result) {
+                    imageView.setImageResource(R.mipmap.italy_flag_icon);
+                    button.setText(getApplicationContext().getResources().getString(R.string.italy));
+
                 }
             }
         });

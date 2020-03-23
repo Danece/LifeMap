@@ -8,9 +8,11 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.CheckBox;
@@ -35,6 +37,22 @@ public class ShowMapActivity extends AppCompatActivity implements CompoundButton
     static final String db_name = "pinDB";      // 資料庫名稱
     static final String tb_name = "pinDetail";  // 資料表名稱
     private ProgressBar mLoadingBar;
+
+    // 鎖住操作返回動作
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.ECLAIR) {
+                event.startTracking();
+            } else {
+                onBackPressed(); // 是其他按鍵則再Call Back方法
+            }
+        }
+        return false;
+    }
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return super.onKeyUp(keyCode, event);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

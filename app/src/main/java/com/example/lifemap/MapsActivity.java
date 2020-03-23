@@ -16,11 +16,13 @@ import android.location.Criteria;
 import android.location.Location;
 //import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -90,6 +92,23 @@ public class MapsActivity extends FragmentActivity
     private ClusterManager<MyClusterItem> mClusterManager;
     private int runCount=0;
     // 初始化建立
+
+    // 鎖住操作返回動作
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.ECLAIR) {
+                event.startTracking();
+            } else {
+                onBackPressed(); // 是其他按鍵則再Call Back方法
+            }
+        }
+        return false;
+    }
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return super.onKeyUp(keyCode, event);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

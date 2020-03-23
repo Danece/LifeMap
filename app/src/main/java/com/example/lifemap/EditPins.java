@@ -10,12 +10,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -55,6 +57,22 @@ public class EditPins extends AppCompatActivity {
     String title_search = "";
     String country_search = "";
     String type_search = "";
+
+    // 鎖住操作返回動作
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.ECLAIR) {
+                event.startTracking();
+            } else {
+                onBackPressed(); // 是其他按鍵則再Call Back方法
+            }
+        }
+        return false;
+    }
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return super.onKeyUp(keyCode, event);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

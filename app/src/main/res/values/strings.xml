@@ -37,7 +37,8 @@
     <string name="selection_food">美食</string>
     <string name="show_marker_image">標記示意圖</string>
     <string name="create_pin_btn">建立新標記</string>
-    <string name="taiwan">台灣</string>
+
+    <!-- Country -->
     <string name="japan">日本</string>
     <string name="south_korea">南韓</string>
     <string name="united_kingdom">英國</string>
@@ -46,6 +47,15 @@
     <string name="france">法國</string>
     <string name="canada">加拿大</string>
     <string name="vietnam">越南</string>
+    <string name="taiwan">台灣</string>
+    <string name="egypt">埃及</string>
+    <string name="austriala">澳洲</string>
+    <string name="germany">德國</string>
+    <string name="hong_kong">香港</string>
+    <string name="russia">俄羅斯</string>
+    <string name="italy">義大利</string>
+    <string name="new_zealand">紐西蘭</string>
+    <string name="greece">希臘</string>
     
     <string-array name="type_selections">
         <item>全部</item>
