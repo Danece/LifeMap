@@ -27,8 +27,10 @@ import java.util.List;
 
 public class ShowMapActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
-    int[] country_chk_id = {R.id.taiwan_cb, R.id.japan_cb, R.id.south_korea_cb, R.id.united_kingdom_cb, R.id.usa_cb,
-                    R.id.china_cb, R.id.france_cb, R.id.canada_cb, R.id.vietnam_cb};
+    int[] country_chk_id = {
+                    R.id.taiwan_cb, R.id.japan_cb, R.id.south_korea_cb, R.id.united_kingdom_cb, R.id.usa_cb, R.id.thailand_cb,
+                    R.id.china_cb, R.id.france_cb, R.id.canada_cb, R.id.vietnam_cb, R.id.greece_cb, R.id.egypt_cb,
+                    R.id.russia_cb, R.id.germany_cb, R.id.italy_cb, R.id.new_zealand_cb, R.id.hong_kong_cb, R.id.australia_cb};
     int[] markerType_chk_id = {R.id.attraction_cb, R.id.food_cb};
     boolean company_flag = false;
     boolean markerType_flag = false;
@@ -183,7 +185,10 @@ public class ShowMapActivity extends AppCompatActivity implements CompoundButton
         }
 
         if(null == countrys || null == markerTypes) {
-            Toast.makeText(ShowMapActivity.this, "選項不可為空",Toast.LENGTH_SHORT).show();
+            String result = getApplicationContext().getResources().getString(R.string.selection_can_not_null);
+            Toast toast = Toast.makeText(ShowMapActivity.this, result, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         } else {
             List titleList = new ArrayList();
             List dateList = new ArrayList();

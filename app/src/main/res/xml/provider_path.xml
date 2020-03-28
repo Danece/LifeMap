@@ -1,0 +1,8 @@
+<paths>
+    <!--<files-path
+        name="data"
+        path="."/>-->
+
+    <root-path name="name" path=""></root-path>
+
+</paths>

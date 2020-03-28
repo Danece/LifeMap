@@ -24,13 +24,32 @@
             tools:layout_editor_absoluteY="15dp"></TextView>
     </android.support.v7.widget.Toolbar>
 
+    <LinearLayout
+        android:id="@+id/linearLayout10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_showPin">
+
+        <TextView
+            android:id="@+id/tvItemsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textSize="14sp" />
+    </LinearLayout>
+
     <ListView
         android:id="@+id/pin_listView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_showPin"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout10"
         tools:layout_editor_absoluteX="0dp" />
 
     <LinearLayout

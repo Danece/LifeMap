@@ -12,19 +12,21 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
+    DatabaseExcute databaseExcute;
+    SQLiteDatabase db;  // 資料庫物件
+    static final String db_name = "pinDB";      // 資料庫名稱
+    static final String tb_name = "pinDetail";  // 資料表名稱
 
     // 鎖住操作返回動作
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -119,6 +121,16 @@ public class MainActivity extends AppCompatActivity {
         try{
             Intent intentMap = new Intent(MainActivity.this, BackupAndRestoreActivity.class);
             startActivityForResult(intentMap, 103);
+        } catch (Exception e) {
+            Log.d("Error", e.toString());
+        }
+    }
+
+    // 產生CSV檔案
+    public void exportCvs(View view) {
+        try{
+            Intent intentMap = new Intent(MainActivity.this, ExportCsvActivity.class);
+            startActivityForResult(intentMap, 104);
         } catch (Exception e) {
             Log.d("Error", e.toString());
         }

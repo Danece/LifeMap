@@ -9,7 +9,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
-import android.view.Menu;
 
 import java.io.ByteArrayOutputStream;
 
@@ -33,9 +32,6 @@ public class BitmapCut {
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
 
         canvas.drawBitmap(bitmap, 0, 0, paint);
-        /*if(!bitmap.isRecycled()) {
-            bitmap.recycle();
-        }*/
 
         return creBitmap;
     }
@@ -48,28 +44,13 @@ public class BitmapCut {
 
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
-        // 切割後所取的正方形邊長
-//        int wh = width > height?height:width;
-        Log.d("XX", Integer.toString(width)+","+Integer.toString(height));
-//        Log.d("XX", "wh:"+Integer.toString(wh));
-//        int wh = width > height?height:width;
-        //int wh = 180; // 175
         // 基於原圖，取正方形左上角X座標
-//        int retX = width > height ? (width - height) / 2 : 0;
         int retX = width > height ? 0 : width / 6;
         int retY = width > height ? 0 : height / 16;
         int wh = width - (retX * 2);
-        //int wh_y = (height / 2) - (retY * 2);
-//        int retX = width > height ? width : 450;
-//        int retY = width > height ? 0 : width/4;
-        Log.d("XX", Integer.toString(retX)+","+Integer.toString(retY));
 
         Bitmap bmp = Bitmap.createBitmap(bitmap, retX, retY, wh, wh, null, false);
-        //Bitmap bmp = Bitmap.createBitmap(bitmap, retX, retY, wh, wh, null, false);
-        /*if( isRecycled && null != bitmap && !bitmap.equals(bmp)) {
-            bitmap.recycle();
-            bitmap = null;
-        }*/
+
         //精确缩放到指定大小
         bmp = Bitmap.createScaledBitmap(bmp,175,175, true);
         return bmp;
@@ -140,10 +121,6 @@ public class BitmapCut {
 
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, src, dst, paint);
-        /*if(null != bitmap && !bitmap.isRecycled()) {
-            bitmap.recycle();
-            bitmap = null;
-        }*/
         return outputBitmap;
     }
 

@@ -4,11 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,12 +23,16 @@ import android.widget.Toast;
 
 import com.example.lifemap.DIY_Kit.InfoItemBar;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class BackupAndRestoreActivity extends AppCompatActivity {
 
@@ -36,6 +41,8 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
     private String db_dir = "/data/data/com.example.lifemap/databases/";
     private String markerImage_dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/";
     private String db_file_name = "pinDB";
+    private static int BUFFER_SIZE = 1444;
+    private static String parentPath = "";
 
     // 鎖住操作返回動作
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -107,6 +114,22 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
             String toDir_markerImage = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup/markerImage/";
             goCopyFolder(markerImage_dir, toDir_markerImage);
 
+            zip(dirMain, Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/", "backup.zip", false);
+
+            try {
+                //exporting
+                Context context = getApplicationContext();
+                File filelocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup.zip");
+                Uri path = FileProvider.getUriForFile(context, "com.example.lifemap.fileprovider", filelocation);
+                this.grantUriPermission(getPackageName(), path, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                Intent fileIntent = new Intent(Intent.ACTION_SEND);
+                fileIntent.setType("application/zip");
+                fileIntent.putExtra(Intent.EXTRA_STREAM, path);
+                startActivity(fileIntent);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             result = getApplicationContext().getResources().getString(R.string.backup_success);
             Toast toast = Toast.makeText(BackupAndRestoreActivity.this, result, Toast.LENGTH_SHORT);
@@ -162,6 +185,7 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
         }
     }
 
+    // 複製文件
     public void goCopyFile(String comepath, String gopath) throws IOException {
         try {
             File wantfile = new File(comepath);
@@ -185,7 +209,7 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
         }
     }
 
-    // 整個資料夾的複製齁，comePath輸入想要複製的資料夾路徑，goPath是目的地路徑拉
+    // 整個資料夾的複製，comePath輸入想要複製的資料夾路徑，goPath是目的地路徑拉
     public void goCopyFolder(String comePath, String goPath){
         try {
             ( new File(goPath)).mkdirs(); //弄資料夾拉
@@ -229,5 +253,67 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
     // 返回
     public void goBack(View view) {
         finish();
+    }
+
+    // 檔案壓縮成ZIP
+    public static boolean zip( String sourcePath, String destinationPath, String destinationFileName, Boolean includeParentFolder)  {
+        new File(destinationPath ).mkdirs();
+        FileOutputStream fileOutputStream ;
+        ZipOutputStream zipOutputStream =  null;
+        try{
+            if (!destinationPath.endsWith("/")) destinationPath+="/";
+            String destination = destinationPath + destinationFileName;
+            File file = new File(destination);
+
+            if (!file.exists()) file.createNewFile();
+
+            fileOutputStream = new FileOutputStream(file);
+            zipOutputStream =  new ZipOutputStream(new BufferedOutputStream(fileOutputStream));
+
+            if (includeParentFolder)
+                parentPath=new File(sourcePath).getParent() + "/";
+            else
+                parentPath=sourcePath;
+
+            zipFile(zipOutputStream, sourcePath);
+
+        }
+        catch (IOException ioe){
+            return false;
+        }finally {
+            if(zipOutputStream!=null)
+                try {
+                    zipOutputStream.close();
+                } catch(IOException e) {}
+        }
+        return true;
+    }
+
+    // ZIP解壓縮
+    private static void zipFile(ZipOutputStream zipOutputStream, String sourcePath) throws  IOException{
+        java.io.File files = new java.io.File(sourcePath);
+        java.io.File[] fileList = files.listFiles();
+
+        String entryPath="";
+        BufferedInputStream input;
+        for (java.io.File file : fileList) {
+            if (file.isDirectory()) {
+                zipFile(zipOutputStream, file.getPath());
+            } else {
+                byte data[] = new byte[BUFFER_SIZE];
+                FileInputStream fileInputStream = new FileInputStream(file.getPath());
+                input = new BufferedInputStream(fileInputStream, BUFFER_SIZE);
+                entryPath=file.getAbsolutePath().replace( parentPath,"");
+
+                ZipEntry entry = new ZipEntry(entryPath);
+                zipOutputStream.putNextEntry(entry);
+
+                int count;
+                while ((count = input.read(data, 0, BUFFER_SIZE)) != -1) {
+                    zipOutputStream.write(data, 0, count);
+                }
+                input.close();
+            }
+        }
     }
 }

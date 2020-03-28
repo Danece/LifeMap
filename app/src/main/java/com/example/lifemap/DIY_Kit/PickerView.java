@@ -1,9 +1,10 @@
 package com.example.lifemap.DIY_Kit;
 
-import android.app.Notification;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -149,12 +150,16 @@ public class PickerView extends View {
 
     private void  init ()
     {
+        AssetManager mgr=getContext().getAssets();//得到AssetManager
+        Typeface tf=Typeface.createFromAsset(mgr, "fonts/jf-open.ttf");//根據路徑得到Typeface
         timer  = new Timer ();
         mDataList  = new ArrayList< String >();
         mPaint  = new Paint ( Paint . ANTI_ALIAS_FLAG );
         mPaint . setStyle ( Paint.Style.FILL );
         mPaint . setTextAlign ( Paint.Align.CENTER );
         mPaint . setColor ( mColorText );
+        mPaint . setTypeface(tf);
+
     }
 
     @Override

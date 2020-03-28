@@ -23,7 +23,8 @@
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:text="TextView"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:fontFamily="@font/jf_open"/>
     </LinearLayout>
 
     <TextView
@@ -34,7 +35,8 @@
         android:layout_marginTop="8dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout8" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout8"
+        android:fontFamily="@font/jf_open"/>
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -45,14 +47,16 @@
         android:background="#ffffff"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInfo_pickerView"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        android:fontFamily="@font/jf_open">
 
         <com.example.lifemap.DIY_Kit.PickerView
             android:id="@+id/country_pv"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="0dp" />
+            android:layout_marginTop="0dp"
+            android:fontFamily="@font/jf_open"/>
     </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

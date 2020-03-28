@@ -7,11 +7,12 @@
     <string name="actionbar_showPins">標記查詢結果</string>
     <string name="actionbar_editPins">編輯標記</string>
     <string name="actionbar_backupAndRestore">資料備份</string>
+    <string name="actionbar_exportCsv">輸出Csv檔案</string>
     <string name="app_name">lifeMap</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_update_location">更新位置</string>
     <string name="title_current_location">目前位置</string>
-    <string name="title_country">[國家]</string>
+    <string name="title_country">[標記國家]</string>
     <string name="title_activity_create_new_pin">createNewPin</string>
     <string name="title_remark_style">[標記圖形]</string>
     <string name="title_longitude">經度</string>
@@ -49,13 +50,14 @@
     <string name="vietnam">越南</string>
     <string name="taiwan">台灣</string>
     <string name="egypt">埃及</string>
-    <string name="austriala">澳洲</string>
+    <string name="australia">澳洲</string>
     <string name="germany">德國</string>
     <string name="hong_kong">香港</string>
     <string name="russia">俄羅斯</string>
     <string name="italy">義大利</string>
     <string name="new_zealand">紐西蘭</string>
     <string name="greece">希臘</string>
+    <string name="thailand">泰國</string>
     
     <string-array name="type_selections">
         <item>全部</item>
@@ -67,6 +69,7 @@
     <string name="delete">刪除</string>
     <string name="yes">是</string>
     <string name="no">否</string>
+    <string name="null_data_info">查無資料</string>
 
     <!--=== Info / Msg ===-->
     <!-- CreateNewPin -->
@@ -76,6 +79,7 @@
     <string name="edit_none">未做修改</string>
     <!-- ShowMapActivity -->
     <string name="search_null">查無資料</string>
+    <string name="selection_can_not_null">選項不可為空</string>
     <!-- BackupAndRestoreActivity -->
     <string name="backup_success">備份成功</string>
     <string name="backup_fail">備份失敗</string>
@@ -86,10 +90,11 @@
     <string name="backup_guideContent">
         <b><font color="#ff0000">※操作前提:新手機要先安裝程式\n\n</font></b>
         <b>Step-1.</b> 點擊\"備份\"的圖示按鈕\n\n
-        <b>Step-2.</b> 到手機儲存空間開啟\"LifeMap\"資料夾\n\n
-        <b>Step-3.</b> 將資料夾內的\"backup\"資料夾搬移到新手機\"LifeMap\"資料夾裡面\n\n
-        <b>Step-4.</b> 新手機開啟程式，點擊\"還原\"的圖示按鈕\n\n
-        <b>Step-5.</b> 結束
+        <b><font color="#ff0000">※以下二選一\n</font></b>
+        <b>Step-2.</b> 到手機儲存空間開啟\"LifeMap\"資料夾，將資料夾內的\"backup\"資料夾搬移到新手機\"LifeMap\"資料夾裡面\n\n
+        <b>Step-2.</b> 將下載的Zip檔案解壓縮後，將\"backup\"資料夾搬移到新手機\"LifeMap\"資料夾裡面\n\n
+        <b>Step-3.</b> 新手機開啟程式，點擊\"還原\"的圖示按鈕\n\n
+        <b>Step-4.</b> 結束
     </string>
     <!-- EditPins -->
     <string name="delete_pin_success">刪除成功</string>
@@ -97,8 +102,13 @@
     <string name="edit_fail">編輯失敗</string>
     <string name="dialog_delete_title">刪除確認</string>
     <string name="dialog_delete_info">是否刪除</string>
-
+    <string name="item_count">資料數量</string>
     <!-- PickerView -->
     <string name="pickerView_title_country">選擇國家</string>
     <string name="pickerView_info_country">請選擇目前所在國家</string>
+    <!-- Export Cvs -->
+    <string name="cvs_title_name">標記名稱</string>
+    <string name="cvs_position">經緯度</string>
+    <string name="select_date_title">[起始日期]</string>
+
 </resources>

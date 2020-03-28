@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -16,12 +15,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -117,11 +114,14 @@ public class EditActivity extends AppCompatActivity {
         } else if(getApplicationContext().getResources().getString(R.string.new_zealand).equals(intent.getStringExtra("country"))) {
             imageView.setImageResource(R.mipmap.new_zealand_flag_icon);
 
-        } else if(getApplicationContext().getResources().getString(R.string.austriala).equals(intent.getStringExtra("country"))) {
+        } else if(getApplicationContext().getResources().getString(R.string.australia).equals(intent.getStringExtra("country"))) {
             imageView.setImageResource(R.mipmap.australia_flag_icon);
 
         } else if(getApplicationContext().getResources().getString(R.string.italy).equals(intent.getStringExtra("country"))) {
             imageView.setImageResource(R.mipmap.italy_flag_icon);
+
+        } else if(getApplicationContext().getResources().getString(R.string.thailand).equals(intent.getStringExtra("country"))) {
+            imageView.setImageResource(R.mipmap.thailand_flag_icon);
 
         }
 
@@ -166,13 +166,14 @@ public class EditActivity extends AppCompatActivity {
         data.add(getApplicationContext().getResources().getString(R.string.canada));
         data.add(getApplicationContext().getResources().getString(R.string.taiwan));
         data.add(getApplicationContext().getResources().getString(R.string.egypt));
-        data.add(getApplicationContext().getResources().getString(R.string.austriala));
+        data.add(getApplicationContext().getResources().getString(R.string.australia));
         data.add(getApplicationContext().getResources().getString(R.string.germany));
         data.add(getApplicationContext().getResources().getString(R.string.hong_kong));
         data.add(getApplicationContext().getResources().getString(R.string.russia));
         data.add(getApplicationContext().getResources().getString(R.string.italy));
         data.add(getApplicationContext().getResources().getString(R.string.new_zealand));
         data.add(getApplicationContext().getResources().getString(R.string.greece));
+        data.add(getApplicationContext().getResources().getString(R.string.thailand));
 
         country_pv . setData ( data );
         country_pv . setOnSelectListener ( new  PickerView.onSelectListener()
@@ -272,13 +273,17 @@ public class EditActivity extends AppCompatActivity {
                     imageView.setImageResource(R.mipmap.new_zealand_flag_icon);
                     button.setText(getApplicationContext().getResources().getString(R.string.new_zealand));
 
-                } else if(getApplicationContext().getResources().getString(R.string.austriala) == result) {
+                } else if(getApplicationContext().getResources().getString(R.string.australia) == result) {
                     imageView.setImageResource(R.mipmap.australia_flag_icon);
-                    button.setText(getApplicationContext().getResources().getString(R.string.austriala));
+                    button.setText(getApplicationContext().getResources().getString(R.string.australia));
 
                 } else if(getApplicationContext().getResources().getString(R.string.italy) == result) {
                     imageView.setImageResource(R.mipmap.italy_flag_icon);
                     button.setText(getApplicationContext().getResources().getString(R.string.italy));
+
+                } else if(getApplicationContext().getResources().getString(R.string.thailand) == result) {
+                    imageView.setImageResource(R.mipmap.thailand_flag_icon);
+                    button.setText(getApplicationContext().getResources().getString(R.string.thailand));
 
                 }
             }

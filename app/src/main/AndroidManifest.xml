@@ -26,6 +26,7 @@
             <activity android:name=".EditSearch" android:label="@string/actionbar_editSearch"></activity>
             <activity android:name=".ShowMapActivity" android:label="@string/actionbar_showMap"></activity>
             <activity android:name=".BackupAndRestoreActivity" android:label="備分/還原"></activity>
+            <activity android:name=".ExportCsvActivity" android:label="輸出Csv檔案"></activity>
             <activity android:name=".MainActivity" android:label="主頁"></activity>
             <activity android:name=".WelcomeActivity">
                 <intent-filter>
@@ -54,5 +55,15 @@
         <meta-data
             android:name="com.google.android.maps.v2.API.KEY"
             android:value="@string/google_maps_key" /> <!-- Map Element -->
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.lifemap.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_path"/>
+        </provider>
     </application>
 </manifest>

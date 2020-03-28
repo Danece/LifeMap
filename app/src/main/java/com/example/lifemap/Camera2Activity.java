@@ -27,7 +27,6 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.KeyEvent;

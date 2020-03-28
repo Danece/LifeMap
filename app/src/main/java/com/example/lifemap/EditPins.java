@@ -8,14 +8,12 @@ import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,20 +21,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lifemap.DIY_Kit.ViewAdapterForPins;
 import com.example.lifemap.model_view.PinDetail;
-import com.example.lifemap.DatabaseExcute;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,6 +100,9 @@ public class EditPins extends AppCompatActivity {
             Button deleteBtn = (Button) findViewById(R.id.deleteBtn);
             deleteBtn.setEnabled(false);
         }
+
+        TextView itemCount = (TextView) findViewById(R.id.tvItemsCount);
+        itemCount.setText(getApplicationContext().getResources().getString(R.string.item_count) + " : " + listView.getAdapter().getCount());
 
         TextView toolbarText = (TextView) findViewById(R.id.toolbarText_showPin);
         AssetManager mgr=getAssets();//得到AssetManager

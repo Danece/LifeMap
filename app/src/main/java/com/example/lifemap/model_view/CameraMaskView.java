@@ -122,10 +122,6 @@ public class CameraMaskView extends View {
         path.rLineTo(0, -heightMinusCorners);
 
         path.close();
-
-//        RectF roundRect = new RectF(left, top, right, bottom);
-//        path.addRoundRect(roundRect, rx, ry, Path.Direction.CW);
-
     }
 
     public Rect getFrameRect() {
