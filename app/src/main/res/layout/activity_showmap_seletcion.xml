@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,12 +45,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:fontFamily="@font/jf_open"
                 android:gravity="center"
                 android:text="@string/title_country"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/jf_open"/>
+                android:textStyle="bold" />
 
             <CheckBox
                 android:id="@+id/country_all_cb"
@@ -58,9 +58,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/all"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow
@@ -73,9 +73,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/taiwan"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/japan_cb"
@@ -83,9 +83,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/japan"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/south_korea_cb"
@@ -93,9 +93,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/south_korea"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow
@@ -108,9 +108,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/united_kingdom"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/usa_cb"
@@ -118,9 +118,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/united_states_of_america"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/china_cb"
@@ -128,9 +128,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/china"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow
@@ -143,9 +143,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/france"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/canada_cb"
@@ -153,9 +153,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/canada"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/vietnam_cb"
@@ -163,9 +163,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/vietnam"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
         </TableRow>
 
@@ -179,9 +179,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/greece"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/egypt_cb"
@@ -189,9 +189,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/egypt"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/russia_cb"
@@ -199,9 +199,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/russia"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
         </TableRow>
 
@@ -215,9 +215,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/germany"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/italy_cb"
@@ -225,9 +225,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/italy"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/new_zealand_cb"
@@ -235,9 +235,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/new_zealand"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
         </TableRow>
 
@@ -251,19 +251,19 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/hong_kong"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
             <CheckBox
-            android:id="@+id/australia_cb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:checked="true"
-            android:text="@string/australia"
-            android:textSize="18sp"
-            android:fontFamily="@font/jf_open"/>
+                android:id="@+id/australia_cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:fontFamily="@font/jf_open"
+                android:text="@string/australia"
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/thailand_cb"
@@ -271,9 +271,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/thailand"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
         </TableRow>
 
@@ -315,9 +315,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/selection_attraction"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
             <CheckBox
                 android:id="@+id/food_cb"
@@ -325,9 +325,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
+                android:fontFamily="@font/jf_open"
                 android:text="@string/selection_food"
-                android:textSize="18sp"
-                android:fontFamily="@font/jf_open"/>
+                android:textSize="18sp" />
 
         </TableRow>
     </TableLayout>

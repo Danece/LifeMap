@@ -90,7 +90,7 @@
     <string name="backup_guideContent">
         <b><font color="#ff0000">※操作前提:新手機要先安裝程式\n\n</font></b>
         <b>Step-1.</b> 點擊\"備份\"的圖示按鈕\n\n
-        <b><font color="#ff0000">※以下二選一\n</font></b>
+        <b><font color="#ff0000">※以下二選一\n\n</font></b>
         <b>Step-2.</b> 到手機儲存空間開啟\"LifeMap\"資料夾，將資料夾內的\"backup\"資料夾搬移到新手機\"LifeMap\"資料夾裡面\n\n
         <b>Step-2.</b> 將下載的Zip檔案解壓縮後，將\"backup\"資料夾搬移到新手機\"LifeMap\"資料夾裡面\n\n
         <b>Step-3.</b> 新手機開啟程式，點擊\"還原\"的圖示按鈕\n\n
@@ -110,5 +110,16 @@
     <string name="cvs_title_name">標記名稱</string>
     <string name="cvs_position">經緯度</string>
     <string name="select_date_title">[起始日期]</string>
+    <string name="how_to_create_googleMap_title">如何製作個人Google Map</string>
+    <string name="how_to_create_googleMap_content">
+        <b>Step-1.</b> 設定條件下載CSV檔案\n\n
+        <b>Step-2.</b> 到Google雲端硬碟，操作新增→更多→我的地圖\n\n
+        <b>Step-3.</b> 點擊新增圖層→匯入，選取下載的CSV\n\n
+        <b>Step-4.</b> 選取要放置地標的欄位，勾選\"經緯度\"，選擇\"經度,緯度\"\n\n
+        <b>Step-5.</b> 選取要放置標題的欄位，勾選\"標記名稱\"\n\n
+        <b>Step-6.</b> 到各標記新增照片\n\n
+        <b>Step-7.</b> 點擊分享，複製\"共用連結\"傳給想分享的人即可\n\n
+        <b>Step-8.</b> 結束
+    </string>
 
 </resources>

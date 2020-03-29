@@ -265,6 +265,7 @@ public class MapsActivity extends FragmentActivity
         // 取目前位置經緯度資訊
         lms = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         Location location = lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Log.d("XX", location.toString());
         lat = location.getLatitude(); // 經度
         lng = location.getLongitude();// 緯度
         LatLng itemPlace = new LatLng(lat, lng);

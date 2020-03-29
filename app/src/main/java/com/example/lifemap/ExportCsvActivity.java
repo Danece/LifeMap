@@ -15,15 +15,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lifemap.DIY_Kit.DatePickerFragment;
+import com.example.lifemap.DIY_Kit.InfoItemBar;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -102,6 +105,15 @@ public class ExportCsvActivity extends AppCompatActivity implements CompoundButt
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             date.setText(formatter.format(new Date()));
         }
+
+        LinearLayout mLinearLayout = (LinearLayout) findViewById(R.id.tutorial_csv);
+        View view= LayoutInflater.from(ExportCsvActivity.this).inflate(R.layout.main_bar, null);
+        TextView content = (TextView) view.findViewById(R.id.tvContent);
+        content.setText(getApplicationContext().getResources().getString(R.string.how_to_create_googleMap_content));
+        InfoItemBar mbar=new InfoItemBar(ExportCsvActivity.this, getApplicationContext().getResources().getString(R.string.how_to_create_googleMap_title));
+        mbar.addView(view);
+        mbar.setShow(false);
+        mLinearLayout.addView(mbar);
     }
 
     // 產生CSV檔案

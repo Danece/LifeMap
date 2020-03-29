@@ -71,6 +71,9 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
 
         LinearLayout mLinearLayout = (LinearLayout) findViewById(R.id.mianliner);
         View view= LayoutInflater.from(BackupAndRestoreActivity.this).inflate(R.layout.main_bar, null);
+
+        TextView content = (TextView) view.findViewById(R.id.tvContent);
+        content.setText(getApplicationContext().getResources().getString(R.string.backup_guideContent));
         InfoItemBar mbar=new InfoItemBar(BackupAndRestoreActivity.this, getApplicationContext().getResources().getString(R.string.backup_guideTitle));
         mbar.addView(view);
         mbar.setShow(false);

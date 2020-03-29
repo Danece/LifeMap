@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,14 +62,14 @@
                 android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
                 android:background="#FFCC22"
+                android:fontFamily="@font/jf_open"
                 android:paddingLeft="10dp"
                 android:paddingTop="2dp"
                 android:paddingRight="10dp"
                 android:text="@string/pinTitle"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/jf_open"/>
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/titleEt"
@@ -79,10 +79,10 @@
                 android:background="#FFFFBB"
                 android:ems="10"
                 android:focusableInTouchMode="true"
+                android:fontFamily="@font/jf_open"
                 android:inputType="textPersonName"
                 android:maxLength="15"
-                android:padding="2dp"
-                android:fontFamily="@font/jf_open"/>
+                android:padding="2dp" />
 
         </TableRow>
 
