@@ -393,7 +393,7 @@ public class CreateNewPin extends AppCompatActivity {
     public void saveMarkerImage() {
 
         // Check LifeMap Folder Exist
-        String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/";
+        String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap";
         File mainFile = new File(dirMain);
 
         // 資料夾是否存在，不存在則建立資料夾
@@ -401,7 +401,7 @@ public class CreateNewPin extends AppCompatActivity {
             mainFile.mkdir();
         }
 
-        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/";
+        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage";
         File markerImageFile = new File(dir);
         markerImageUuid = UUID.randomUUID().toString();
 
@@ -411,13 +411,13 @@ public class CreateNewPin extends AppCompatActivity {
         }
 
         try {
-            File file = new File(dir + markerImageUuid + ".png");
+            File file = new File(dir + "/" + markerImageUuid + ".png");
             FileOutputStream outputStream = new FileOutputStream(file);
             markerImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             outputStream.flush();
             outputStream.close();
 
-            File file2 = new File(dir + markerImageUuid + "_edit.png");
+            File file2 = new File(dir + "/" + markerImageUuid + "_edit.png");
             FileOutputStream outputStream2 = new FileOutputStream(file2);
             markerImageForEdit.compress(Bitmap.CompressFormat.PNG, 100, outputStream2);
             outputStream.flush();

@@ -16,10 +16,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -70,13 +72,12 @@ public class MainActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        if (!checkLocationPermission()) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-
         createLifeMapFolder();
         createBackupFolder();
 
+        if (!checkLocationPermission()) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
     }
 
     // 建立新標記
@@ -84,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
         try{
             if (!checkLocationPermission()) {
                 ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                String result = getApplicationContext().getResources().getString(R.string.no_authorization_gps);
+                Toast toast = Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             } else {
                 Intent intentMap = new Intent(MainActivity.this, CreateNewPin.class);
                 startActivityForResult(intentMap, 0);
@@ -98,6 +103,10 @@ public class MainActivity extends AppCompatActivity {
         try{
             if (!checkLocationPermission()) {
                 ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                String result = getApplicationContext().getResources().getString(R.string.no_authorization_gps);
+                Toast toast = Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             } else {
                 Intent intentMap = new Intent(MainActivity.this, ShowMapActivity.class);
                 startActivityForResult(intentMap, 101);
@@ -191,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void createLifeMapFolder () {
         // Check LifeMap Folder Exist
-        String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/";
+        String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap";
         File mainFile = new File(dirMain);
 
         // 資料夾是否存在，不存在則建立資料夾
@@ -202,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void createBackupFolder () {
         // Check LifeMap Folder Exist
-        String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup/";
+        String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup";
         File mainFile = new File(dirMain);
 
         // 資料夾是否存在，不存在則建立資料夾

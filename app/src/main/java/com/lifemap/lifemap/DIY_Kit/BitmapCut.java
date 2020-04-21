@@ -144,7 +144,7 @@ public class BitmapCut {
         Canvas canvas = new Canvas(newBitmap);
         canvas.drawBitmap(background, 0, 0, null);
         canvas.drawBitmap(foreground, bgWidth/16, bgWidth/16, null);
-        canvas.save(Canvas.ALL_SAVE_FLAG);
+        canvas.save();
         canvas.restore();
         return newBitmap;
     }

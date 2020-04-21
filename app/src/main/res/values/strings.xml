@@ -1,4 +1,12 @@
 <resources>
+
+    <!-- 主頁標記名稱 -->
+    <string name="createPins">建立標記</string>
+    <string name="showMap">地圖展示</string>
+    <string name="database">資料庫</string>
+    <string name="backupAndRestore">備份還原</string>
+    <string name="exportCsv">Csv輸出</string>
+
     <string name="package_version_name">版本號碼</string>
     <string name="actionbar_main">主頁</string>
     <string name="actionbar_createPins">建立標記</string>
@@ -72,6 +80,8 @@
     <string name="null_data_info">查無資料</string>
 
     <!--=== Info / Msg ===-->
+    <!-- MainActivity -->
+    <string name="no_authorization_gps">請授權GPS定位</string>
     <!-- CreateNewPin -->
     <string name="create_success">建立成功</string>
     <string name="take_picture_fail">沒有拍到照片</string>
@@ -121,5 +131,6 @@
         <b>Step-7.</b> 點擊分享，複製\"共用連結\"傳給想分享的人即可\n\n
         <b>Step-8.</b> 結束
     </string>
+
 
 </resources>
