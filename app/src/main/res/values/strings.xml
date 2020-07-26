@@ -1,5 +1,6 @@
 <resources>
 
+    <string name="api_key">AIzaSyBNuhDYASNL2gsT7be2gi7ApSop4HC4mNk</string>
     <!-- 主頁標記名稱 -->
     <string name="createPins">建立標記</string>
     <string name="showMap">地圖展示</string>
@@ -14,7 +15,7 @@
     <string name="actionbar_editSearch">設定查詢條件</string>
     <string name="actionbar_showPins">標記查詢結果</string>
     <string name="actionbar_editPins">編輯標記</string>
-    <string name="actionbar_backupAndRestore">資料備份</string>
+    <string name="actionbar_backupAndRestore">資料備份/還原</string>
     <string name="actionbar_exportCsv">輸出Csv檔案</string>
     <string name="app_name">lifeMap</string>
     <string name="title_activity_maps">Map</string>
@@ -85,14 +86,16 @@
     <!-- CreateNewPin -->
     <string name="create_success">建立成功</string>
     <string name="take_picture_fail">沒有拍到照片</string>
-    <string name="gps_fail">GPS返回</string>
+    <string name="gps_fail">GPS失敗</string>
     <string name="edit_none">未做修改</string>
     <!-- ShowMapActivity -->
     <string name="search_null">查無資料</string>
     <string name="selection_can_not_null">選項不可為空</string>
     <!-- BackupAndRestoreActivity -->
+    <string name="backup_button">備份</string>
     <string name="backup_success">備份成功</string>
     <string name="backup_fail">備份失敗</string>
+    <string name="restore_button">還原</string>
     <string name="restore_success">還原成功</string>
     <string name="restore_fail">還原失敗</string>
     <string name="lifeMap_folder_not_exist">LifeMap 資料夾不存在</string>

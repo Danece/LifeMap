@@ -1,4 +1,4 @@
-package com.example.lifemap.DIY_Kit;
+package com.lifeMap.lifemap.DIY_Kit;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.lifemap.R;
+import com.lifeMap.lifemap.R;
 
 public class InfoItemBar extends LinearLayout {
 

@@ -1,4 +1,4 @@
-package com.example.lifemap;
+package com.lifeMap.lifemap;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,8 +25,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lifemap.DIY_Kit.DatePickerFragment;
-import com.example.lifemap.DIY_Kit.InfoItemBar;
+import com.lifeMap.lifemap.DIY_Kit.DatePickerFragment;
+import com.lifeMap.lifemap.DIY_Kit.InfoItemBar;
+import com.lifeMap.lifemap.R;
+import com.lifeMap.lifemap.DIY_Kit.DatePickerFragment;
+import com.lifeMap.lifemap.DIY_Kit.InfoItemBar;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -196,7 +199,7 @@ public class ExportCsvActivity extends AppCompatActivity implements CompoundButt
                     //exporting
                     Context context = getApplicationContext();
                     File filelocation = new File(getFilesDir(), "data.csv");
-                    Uri path = FileProvider.getUriForFile(context, "com.example.lifemap.fileprovider", filelocation);
+                    Uri path = FileProvider.getUriForFile(context, "com.lifeMap.lifemap.fileprovider", filelocation);
                     this.grantUriPermission(getPackageName(), path, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     Intent fileIntent = new Intent(Intent.ACTION_SEND);
                     fileIntent.setType("text/csv");

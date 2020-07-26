@@ -1,4 +1,4 @@
-package com.example.lifemap;
+package com.lifeMap.lifemap;
 
 import android.Manifest;
 import android.content.Context;
@@ -37,6 +37,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.lifeMap.lifemap.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -156,7 +158,7 @@ public class Camera2Activity extends AppCompatActivity {
         File markerImageFile = new File(dir);
         // 資料夾是否存在，不存在則建立資料夾
         if(!markerImageFile.exists()) {
-            markerImageFile.mkdir();
+            markerImageFile.mkdirs();
         } else {
             File file_old = new File(dir + "capture.jpeg");
             file_old.delete();

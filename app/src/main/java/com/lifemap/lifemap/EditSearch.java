@@ -1,4 +1,4 @@
-package com.example.lifemap;
+package com.lifeMap.lifemap;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,7 +23,8 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.lifemap.DIY_Kit.PickerView;
+import com.lifeMap.lifemap.R;
+import com.lifeMap.lifemap.DIY_Kit.PickerView;
 
 import java.util.ArrayList;
 import java.util.List;

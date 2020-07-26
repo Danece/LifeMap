@@ -1,4 +1,4 @@
-package com.example.lifemap;
+package com.lifeMap.lifemap;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
+import com.lifeMap.lifemap.R;
 
 public class WelcomeActivity extends AppCompatActivity implements Animation.AnimationListener{
 

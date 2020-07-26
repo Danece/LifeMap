@@ -1,4 +1,4 @@
-package com.example.lifemap;
+package com.lifeMap.lifemap;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,6 +20,8 @@ import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.lifeMap.lifemap.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -243,6 +245,11 @@ public class ShowMapActivity extends AppCompatActivity implements CompoundButton
                 // Loading close
                 mLoadingBar.setVisibility(View.GONE);
             }
+        } else {
+            String result = getApplicationContext().getResources().getString(R.string.gps_fail);
+            Toast toast = Toast.makeText(ShowMapActivity.this, result, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         }
     }
 }

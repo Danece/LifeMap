@@ -1,4 +1,4 @@
-package com.example.lifemap;
+package com.lifeMap.lifemap;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,11 +25,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lifemap.DIY_Kit.ViewAdapterForPins;
-import com.example.lifemap.model_view.PinDetail;
+import com.lifeMap.lifemap.R;
+import com.lifeMap.lifemap.DIY_Kit.ViewAdapterForPins;
+import com.lifeMap.lifemap.model_view.PinDetail;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class EditPins extends AppCompatActivity {
@@ -284,5 +286,17 @@ public class EditPins extends AppCompatActivity {
         }
     }
 
+    // 排序反轉
+    public void sortReverse (View view) {
+        ListView listView = (ListView) findViewById(R.id.pin_listView);
+        Collections.reverse(titleList);
+        Collections.reverse(dateList);
+        Collections.reverse(countryList);
+        Collections.reverse(markerTypeList);
+        Collections.reverse(markerImageUuidList);
+        adapter = new ViewAdapterForPins(EditPins.this,titleList, dateList, countryList, markerTypeList, markerImageUuidList);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(onClickListView);
+    }
 
 }

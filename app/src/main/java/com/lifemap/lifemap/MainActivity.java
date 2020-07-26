@@ -1,4 +1,4 @@
-package com.example.lifemap;
+package com.lifeMap.lifemap;
 
 import android.Manifest;
 import android.content.Context;
@@ -22,6 +22,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.lifeMap.lifemap.DatabaseExcute;
+import com.lifeMap.lifemap.R;
 
 import java.io.File;
 
@@ -75,9 +78,19 @@ public class MainActivity extends AppCompatActivity {
         createLifeMapFolder();
         createBackupFolder();
 
+        databaseExcute = new DatabaseExcute();
+        db = openOrCreateDatabase(db_name, Context.MODE_PRIVATE, null);
+        databaseExcute.checkAndCreateDB(db, tb_name);
+
         if (!checkLocationPermission()) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            ActivityCompat.requestPermissions(this,new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            }, 1);
         }
+
     }
 
     // 建立新標記

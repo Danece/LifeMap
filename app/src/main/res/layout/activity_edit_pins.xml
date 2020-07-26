@@ -24,6 +24,17 @@
             tools:layout_editor_absoluteY="15dp"></TextView>
     </android.support.v7.widget.Toolbar>
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@mipmap/change_sort"
+        android:onClick="sortReverse"
+        app:layout_constraintEnd_toEndOf="@+id/pin_listView"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_showPin" />
+
     <LinearLayout
         android:id="@+id/linearLayout10"
         android:layout_width="match_parent"

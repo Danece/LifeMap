@@ -1,4 +1,4 @@
-package com.example.lifemap;
+package com.lifeMap.lifemap;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,8 +22,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lifemap.DIY_Kit.PickerView;
-import com.example.lifemap.model_view.PinDetail;
+import com.lifeMap.lifemap.R;
+import com.lifeMap.lifemap.DIY_Kit.PickerView;
+import com.lifeMap.lifemap.model_view.PinDetail;
 
 import java.util.ArrayList;
 import java.util.List;

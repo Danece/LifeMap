@@ -1,4 +1,4 @@
-package com.example.lifemap.DIY_Kit;
+package com.lifeMap.lifemap.DIY_Kit;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -8,7 +8,7 @@ import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-import com.example.lifemap.R;
+import com.lifeMap.lifemap.R;
 
 import java.util.Calendar;
 
@@ -32,9 +32,24 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     }
 
     private void getDateFormat(int year,int monthOfYear,int dayOfMonth){
+
+        String day = "";
+        if (10 > dayOfMonth + 1) {
+            day = "0" + String.valueOf(dayOfMonth + 1);
+        } else {
+            day = String.valueOf(dayOfMonth + 1);
+        }
+
+        String month = "";
+        if (10 > monthOfYear + 1) {
+            month = "0" + String.valueOf(monthOfYear + 1);
+        } else {
+            month = String.valueOf(monthOfYear + 1);
+        }
+
         String result =  String.valueOf(year) + "-"
-                + String.valueOf(monthOfYear + 1) + "-"
-                + String.valueOf(dayOfMonth);
+                + month + "-"
+                + day;
 
         TextView date = (TextView) getActivity().findViewById(R.id.tvDate_csv);
         date.setText(result);

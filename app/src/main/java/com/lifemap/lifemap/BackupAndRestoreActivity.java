@@ -1,4 +1,4 @@
-package com.example.lifemap;
+package com.lifeMap.lifemap;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lifemap.DIY_Kit.InfoItemBar;
+import com.lifeMap.lifemap.R;
+import com.lifeMap.lifemap.DIY_Kit.InfoItemBar;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -38,7 +39,7 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
 
     private File dir = Environment.getExternalStorageDirectory();
     private File dataFile = new File(dir, "lifeMap");
-    private String db_dir = "/data/data/com.example.lifemap/databases/";
+    private String db_dir = "/data/data/com.lifeMap.lifemap/databases/";
     private String markerImage_dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/";
     private String db_file_name = "pinDB";
     private static int BUFFER_SIZE = 1444;
@@ -102,7 +103,7 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
 
             // 資料夾是否存在，不存在則建立資料夾
             if(!mainFile.exists()) {
-                mainFile.mkdir();
+                mainFile.mkdirs();
             }
 
             // Backup DB
@@ -123,7 +124,7 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
                 //exporting
                 Context context = getApplicationContext();
                 File filelocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup.zip");
-                Uri path = FileProvider.getUriForFile(context, "com.example.lifemap.fileprovider", filelocation);
+                Uri path = FileProvider.getUriForFile(context, "com.lifeMap.lifemap.fileprovider", filelocation);
                 this.grantUriPermission(getPackageName(), path, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 Intent fileIntent = new Intent(Intent.ACTION_SEND);
                 fileIntent.setType("application/zip");

@@ -1,4 +1,4 @@
-package com.example.lifemap;
+package com.lifeMap.lifemap;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -26,9 +26,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
+import android.location.LocationListener;
 
-import com.example.lifemap.cluster.CustomClusterRenderer;
-import com.example.lifemap.cluster.MyClusterItem;
+import com.google.common.util.concurrent.ServiceManager;
+import com.lifeMap.lifemap.cluster.CustomClusterRenderer;
+import com.lifeMap.lifemap.cluster.MyClusterItem;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -44,7 +46,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.location.LocationListener;
+//import com.google.android.gms.location.LocationListener;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -53,6 +55,7 @@ import java.util.List;
 
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
+import com.lifeMap.lifemap.cluster.MyClusterItem;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -73,6 +76,8 @@ public class MapsActivity extends FragmentActivity
     // GPS
     public static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
     private LocationManager lms;
+    private LocationListener lls;
+
     double lat, lng;
     String entrance;
     DecimalFormat df = new DecimalFormat("##0.0000");
@@ -86,6 +91,11 @@ public class MapsActivity extends FragmentActivity
     List markerImageUuidList = new ArrayList();
     List longitudeList = new ArrayList();
     List latitudeList = new ArrayList();
+
+    // The minimum distance to change Updates in meters
+    private static final long LOCATION_UPDATE_MIN_DISTANCE = 10; // 10 meters
+    // The minimum time between updates in milliseconds
+    private static final long LOCATION_UPDATE_MIN_TIME = 1000 * 60 * 1; // 1 minute
 
     //
     private ClusterManager<MyClusterItem> mClusterManager;
@@ -117,6 +127,27 @@ public class MapsActivity extends FragmentActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         lms = (LocationManager) getSystemService(LOCATION_SERVICE);
+        lls = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        };
         // 讀取傳入參數
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -209,20 +240,31 @@ public class MapsActivity extends FragmentActivity
 
     // 建立標記定位
     private void createNewPinPositioning() {
-        if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+       /* if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     MY_PERMISSION_ACCESS_COARSE_LOCATION);
             //return;
-        }
+        }*/
+      //  lms = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        Location location = getCurrentLocation_diy();
 
-        Location location = lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //Location location = lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
         if (null != location) {
             lat = location.getLatitude(); // 經度
             lng = location.getLongitude();// 緯度
         } else {
             lat = 0;
             lng = 0;
+
+            Intent intent = new Intent();
+            setResult(RESULT_CANCELED, intent);
+            finish();
         }
+
+        Log.d("XX", lat+"+"+lng);
         // 如果記事已經儲存座標
         if (0.0 != lat && 0.0 != lng) {
             // 建立座標物件
@@ -238,6 +280,31 @@ public class MapsActivity extends FragmentActivity
                 googleApiClient.connect();
             }
         }
+    }
+
+    private Location getCurrentLocation_diy() {
+        if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    MY_PERMISSION_ACCESS_COARSE_LOCATION);
+            //return;
+        }
+        boolean isGPSEnabled = lms.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkEnabled = lms.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        Location location = null;
+        if (isGPSEnabled || isNetworkEnabled) {
+            if (isNetworkEnabled) {
+                lms.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, lls);
+                location = lms.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            if (isGPSEnabled) {
+                lms.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, lls);
+                location = lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+        }
+        return location;
     }
 
     // 展現所標標記地圖
@@ -263,13 +330,21 @@ public class MapsActivity extends FragmentActivity
             }
         }
         // 取目前位置經緯度資訊
-        lms = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        Location location = lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        Log.d("XX", location.toString());
-        lat = location.getLatitude(); // 經度
-        lng = location.getLongitude();// 緯度
-        LatLng itemPlace = new LatLng(lat, lng);
-        moveMap(itemPlace);
+        /*lms = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        Location location = lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);*/
+        Location location = getCurrentLocation_diy();
+        Log.d("show", location.toString());
+        if (null == location) {
+            Intent intent = new Intent();
+            setResult(RESULT_CANCELED, intent);
+            finish();
+
+        } else {
+            lat = location.getLatitude(); // 經度
+            lng = location.getLongitude();// 緯度
+            LatLng itemPlace = new LatLng(lat, lng);
+            moveMap(itemPlace);
+        }
         // 關閉更新Manager
         //lms.removeUpdates(this);
     }
@@ -349,7 +424,7 @@ public class MapsActivity extends FragmentActivity
         moveMap(latLng);
     }
 
-    /*@Override
+    @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
 
     }
@@ -362,7 +437,7 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onProviderDisabled(String provider) {
 
-    }*/
+    }
 
     // Google API 生命週期控制-Resume
     @Override
@@ -385,7 +460,9 @@ public class MapsActivity extends FragmentActivity
                 // for ActivityCompat#requestPermissions for more details.
                 return;
             }
-            //lms.requestLocationUpdates(best, 5000, 5, this);
+
+            // Y200716
+            //lms.requestLocationUpdates(best, 5000, 5, (android.location.LocationListener) this);
         }
     }
 
@@ -523,9 +600,13 @@ public class MapsActivity extends FragmentActivity
 
     // 重新查詢資料
     public void refresh(View view) {
-        for(int i=0; i<markerList.size(); i++) {
-            markerList.get(i).remove();
+        if (null != markerList) {
+            for (int i = 0; i < markerList.size(); i++) {
+                markerList.get(i).remove();
+            }
         }
+        lms = null;
+        lms = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         this.createNewPinPositioning();
     }
 

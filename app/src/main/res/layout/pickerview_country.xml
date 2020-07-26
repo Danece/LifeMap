@@ -50,7 +50,7 @@
         tools:ignore="MissingConstraints"
         android:fontFamily="@font/jf_open">
 
-        <com.example.lifemap.DIY_Kit.PickerView
+        <com.lifeMap.lifemap.DIY_Kit.PickerView
             android:id="@+id/country_pv"
             android:layout_width="wrap_content"
             android:layout_height="80dp"

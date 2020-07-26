@@ -1,4 +1,4 @@
-package com.example.lifemap.DIY_Kit;
+package com.lifeMap.lifemap.DIY_Kit;
 
 import android.app.Activity;
 import android.graphics.BitmapFactory;
@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.example.lifemap.R;
+import com.lifeMap.lifemap.R;
 
 import java.util.ArrayList;
 import java.util.List;

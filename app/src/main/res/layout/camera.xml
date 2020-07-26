@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.example.lifemap.model_view.CameraMaskView
+        <com.lifeMap.lifemap.model_view.CameraMaskView
             android:id="@+id/maskView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

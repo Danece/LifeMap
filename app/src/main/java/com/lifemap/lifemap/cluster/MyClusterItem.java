@@ -1,4 +1,4 @@
-package com.example.lifemap.cluster;
+package com.lifeMap.lifemap.cluster;
 
 import android.graphics.Bitmap;
 

@@ -1,10 +1,9 @@
-package com.example.lifemap.cluster;
+package com.lifeMap.lifemap.cluster;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.content.ContextCompat;
 
-import com.example.lifemap.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -13,6 +12,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
+import com.lifeMap.lifemap.R;
 
 public class CustomClusterRenderer extends DefaultClusterRenderer<MyClusterItem> {
 

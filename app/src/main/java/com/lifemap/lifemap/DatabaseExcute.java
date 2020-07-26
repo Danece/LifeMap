@@ -1,4 +1,4 @@
-package com.example.lifemap;
+package com.lifeMap.lifemap;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.lifemap.model_view.PinDetail;
+import com.lifeMap.lifemap.model_view.PinDetail;
 
 public class DatabaseExcute extends AppCompatActivity {
 
@@ -81,7 +81,7 @@ public class DatabaseExcute extends AppCompatActivity {
     public Cursor getDbAllInfo(SQLiteDatabase db, String tb_name, String countrys,  String markerTypes, String date) {
 
         String condition = " WHERE ";
-        condition = condition + "country IN (" + countrys + ") AND markerType IN (" + markerTypes + ") AND date >= " + date ;
+        condition = condition + "country IN (" + countrys + ") AND markerType IN (" + markerTypes + ") AND date >= date(" + date + ")" ;
 
         Cursor cursor = db.rawQuery("SELECT * FROM "+ tb_name + condition , null);
         Log.d("XX_databaseExcute", condition);

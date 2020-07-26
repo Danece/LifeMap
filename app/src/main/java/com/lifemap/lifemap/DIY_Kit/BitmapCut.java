@@ -1,4 +1,4 @@
-package com.example.lifemap.DIY_Kit;
+package com.lifeMap.lifemap.DIY_Kit;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

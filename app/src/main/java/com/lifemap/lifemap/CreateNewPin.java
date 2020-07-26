@@ -1,4 +1,4 @@
-package com.example.lifemap;
+package com.lifeMap.lifemap;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -36,8 +36,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lifemap.DIY_Kit.BitmapCut;
-import com.example.lifemap.DIY_Kit.PickerView;
+import com.lifeMap.lifemap.R;
+import com.lifeMap.lifemap.DIY_Kit.BitmapCut;
+import com.lifeMap.lifemap.DIY_Kit.PickerView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -190,6 +191,7 @@ public class CreateNewPin extends AppCompatActivity {
                 Bundle extras = intent.getExtras();
                 longitude = String.valueOf(df.format(extras.getDouble("longitude")));
                 latitude = String.valueOf(df.format(extras.getDouble("latitude")));
+
             }
         } else {
             if(100 == requestCode) {
@@ -398,7 +400,7 @@ public class CreateNewPin extends AppCompatActivity {
 
         // 資料夾是否存在，不存在則建立資料夾
         if(!mainFile.exists()) {
-            mainFile.mkdir();
+            mainFile.mkdirs();
         }
 
         String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage";
@@ -407,7 +409,7 @@ public class CreateNewPin extends AppCompatActivity {
 
         // 資料夾是否存在，不存在則建立資料夾
         if(!markerImageFile.exists()) {
-            markerImageFile.mkdir();
+            markerImageFile.mkdirs();
         }
 
         try {

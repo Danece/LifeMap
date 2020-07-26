@@ -1,4 +1,4 @@
-package com.example.lifemap.model_view;
+package com.lifeMap.lifemap.model_view;
 
 import android.content.Context;
 import android.graphics.Canvas;

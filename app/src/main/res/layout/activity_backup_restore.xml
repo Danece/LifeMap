@@ -12,7 +12,9 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         app:titleTextColor="@color/colorBarText"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-4dp">
 
         <TextView
             android:id="@+id/toolbarText_backupAndRestore"
@@ -29,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
         android:orientation="horizontal"
@@ -37,26 +39,63 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_backupAndRestore">
 
-        <Button
-            android:id="@+id/restoreBtn"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="94dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="48dp"
-            android:background="@drawable/restore_click"
-            android:onClick="doRestore" />
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/restoreBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="94dp"
+                android:background="@drawable/restore_click"
+                android:onClick="doRestore" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/jf_open"
+                android:text="@string/restore_button"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/backupBtn"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="94dp"
+            android:layout_height="wrap_content"
             android:layout_marginRight="48dp"
-            android:background="@drawable/backup_click"
-            android:onClick="doBackup" />
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/backupBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="94dp"
+                android:background="@drawable/backup_click"
+                android:onClick="doBackup" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/jf_open"
+                android:text="@string/backup_button"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
