@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.lifeMap.lifemap"
         minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 6
+        targetSdkVersion 29
+        versionCode 8
         versionName "2.1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
