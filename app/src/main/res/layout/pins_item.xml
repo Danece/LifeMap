@@ -34,7 +34,7 @@
 
                 <LinearLayout
                     android:id="@+id/linearLayout"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
@@ -48,17 +48,17 @@
                         android:id="@+id/title_Tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/jf_open"
                         android:text="TextView"
-                        android:textSize="18sp"
-                        android:fontFamily="@font/jf_open"/>
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/date_Tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/jf_open"
                         android:text="TextView"
-                        android:textSize="12sp"
-                        android:fontFamily="@font/jf_open"/>
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 

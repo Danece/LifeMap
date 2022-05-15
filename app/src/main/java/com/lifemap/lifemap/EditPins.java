@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -25,7 +24,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lifeMap.lifemap.R;
 import com.lifeMap.lifemap.DIY_Kit.ViewAdapterForPins;
 import com.lifeMap.lifemap.model_view.PinDetail;
 
@@ -91,7 +89,7 @@ public class EditPins extends AppCompatActivity {
         queryPinDB(title_search, country_search, type_search);
         ListView listView = (ListView) findViewById(R.id.pin_listView);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        adapter = new ViewAdapterForPins(EditPins.this,titleList, dateList, countryList, markerTypeList, markerImageUuidList);
+        adapter = new ViewAdapterForPins(EditPins.this,titleList, dateList, countryList, markerTypeList, markerImageUuidList, this.getFilesDir().getAbsolutePath());
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(onClickListView);
 
@@ -128,31 +126,19 @@ public class EditPins extends AppCompatActivity {
             adapter.setCurrentItem(position);
             adapter.setClick(true);
             adapter.notifyDataSetChanged();
-            String result = getApplicationContext().getResources().getString(R.string.choose) +
-                    titleList.get(position);
+            String result = getApplicationContext().getResources().getString(R.string.choose) + "[" +
+                    titleList.get(position) + "]";
             Toast toast = Toast.makeText(EditPins.this, result, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
 
     };
 
     // 查DB資料
-    public void queryPinDB(String title, String country, String type) {
+    public void queryPinDB(String title, String country, String markType) {
         db = openOrCreateDatabase(db_name, Context.MODE_PRIVATE, null);
-
-        String sql = "SELECT * FROM pinDetail WHERE 1=1 ";
-        if (!"".equals(title)) {
-            sql = sql + "AND title LIKE '%" + title + "%'";
-        }
-        if (!"".equals(country)) {
-            sql = sql + "AND country = '" + country + "' ";
-        }
-        if (!"全部".equals(type)) {
-            sql = sql + "AND markerType = '" + type + "' ";
-        }
-
-        Cursor cursor = db.rawQuery(sql, null);
+        databaseExcute = new DatabaseExcute();
+        Cursor cursor = databaseExcute.getDbInfoForPinsSearch(db, tb_name, title, country, markType);
         if(cursor.moveToFirst()) {
             do {
                 titleList.add(cursor.getString(0));
@@ -169,7 +155,8 @@ public class EditPins extends AppCompatActivity {
 
     // 返回
     public void goBack(View view) {
-        finish();Intent intent = new Intent(EditPins.this, EditSearch.class);
+        finish();
+        Intent intent = new Intent(EditPins.this, EditSearch.class);
         startActivity(intent);
     }
 
@@ -186,7 +173,8 @@ public class EditPins extends AppCompatActivity {
         databaseExcute.delete(db, tb_name, pinDetail);
 
         // Delete Image Files
-        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/";
+        //String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/";
+        String dir = this.getFilesDir().getAbsolutePath() + "/LifeMap/markerImage/";
         File file = new File(dir + markerImageUuidList.get(choosePosition).toString() + ".png");
         file.delete();
         File file2 = new File(dir + markerImageUuidList.get(choosePosition).toString() + "_edit.png");
@@ -227,7 +215,6 @@ public class EditPins extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 String result = getApplicationContext().getResources().getString(R.string.edit_none);
                 Toast toast = Toast.makeText(EditPins.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
                 refresh();
             }
@@ -239,7 +226,6 @@ public class EditPins extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 String result = getApplicationContext().getResources().getString(R.string.delete_pin_success) + ":" + titleList.get(choosePosition);
                 Toast toast = Toast.makeText(EditPins.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
                 refresh();
                 clearPinData();
@@ -253,8 +239,12 @@ public class EditPins extends AppCompatActivity {
     public void editPinInfo(View view) {
         Intent intentMap = new Intent(EditPins.this, EditActivity.class);
         intentMap.putExtra("title", titleList.get(choosePosition).toString());
+        intentMap.putExtra("date", dateList.get(choosePosition).toString());
         intentMap.putExtra("country", countryList.get(choosePosition).toString());
         intentMap.putExtra("markerType", markerTypeList.get(choosePosition).toString());
+        intentMap.putExtra("longitude", longitudeList.get(choosePosition).toString());
+        intentMap.putExtra("latitude", latitudeList.get(choosePosition).toString());
+        intentMap.putExtra("markerImageUuid", markerImageUuidList.get(choosePosition).toString());
         startActivityForResult(intentMap, 101);
     }
 
@@ -265,7 +255,6 @@ public class EditPins extends AppCompatActivity {
             if(101 == requestCode) {
                 String result = getApplicationContext().getResources().getString(R.string.edit_success);
                 Toast toast = Toast.makeText(EditPins.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
                 refresh();
             }
@@ -273,14 +262,12 @@ public class EditPins extends AppCompatActivity {
             if(101 == requestCode) {
                 String result = getApplicationContext().getResources().getString(R.string.edit_none);
                 Toast toast = Toast.makeText(EditPins.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
         } else {
             if(101 == requestCode) {
                 String result = getApplicationContext().getResources().getString(R.string.edit_fail);
                 Toast toast = Toast.makeText(EditPins.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
         }
@@ -294,7 +281,7 @@ public class EditPins extends AppCompatActivity {
         Collections.reverse(countryList);
         Collections.reverse(markerTypeList);
         Collections.reverse(markerImageUuidList);
-        adapter = new ViewAdapterForPins(EditPins.this,titleList, dateList, countryList, markerTypeList, markerImageUuidList);
+        adapter = new ViewAdapterForPins(EditPins.this,titleList, dateList, countryList, markerTypeList, markerImageUuidList, this.getFilesDir().getAbsolutePath());
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(onClickListView);
     }

@@ -17,6 +17,8 @@ import java.util.TimerTask;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
+import static java.lang.StrictMath.abs;
+
 public class PickerView extends View {
     public static final String TAG = "PickerView";
     // Text 之間間距和 minTextSize 之比
@@ -46,6 +48,9 @@ public class PickerView extends View {
     private onSelectListener mSelectListener;
     private Timer timer;
     private MyTimerTask mTask;
+
+    private Boolean flag = true;
+
 
     Handler updateHandler = new Handler() {
         @Override
@@ -260,6 +265,10 @@ public class PickerView extends View {
             mTask . cancel ();
             mTask  = null ;
         }
+        if (flag) {
+            flag = false;
+        }
+
         mLastDownY  = (int) event.getY();
     }
 
@@ -287,7 +296,7 @@ public class PickerView extends View {
     private void  doUp ( MotionEvent event )
     {
         // 抬起手後mCurrentSelected的位置由當前位置move到中間選中位置
-        if ( Math . abs ( mMoveLen ) > 0.0001 )
+        if ( Math . abs ( mMoveLen ) < 0.0001 )
         {
             mMoveLen  = 0 ;
             return ;
@@ -299,6 +308,26 @@ public class PickerView extends View {
         }
         mTask  = new MyTimerTask ( updateHandler );
         timer . schedule ( mTask , 0 , 10 );
+
+        flag = true;
+        while(flag) {
+            runCenter();
+        }
+    }
+
+    /* 滾回中間位置 */
+    private void runCenter() {
+        if (abs(mMoveLen) < SPEED) {
+            mMoveLen = 0f;
+            if (flag) {
+                flag = false;
+                performSelect();
+            }
+        } else {
+            // 這裡mMoveLen / Math.abs(mMoveLen)是為了保有mMoveLen的正負號，以實現上滾或下滾
+            mMoveLen -= mMoveLen / abs(mMoveLen) * SPEED;
+        }
+        invalidate();
     }
 
     class MyTimerTask extends TimerTask {

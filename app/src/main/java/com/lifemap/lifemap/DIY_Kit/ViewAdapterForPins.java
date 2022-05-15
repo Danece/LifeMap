@@ -29,6 +29,7 @@ public class ViewAdapterForPins extends BaseAdapter {
     private boolean isClick=false;
     private LayoutInflater inflater;    //加載layout
     private Activity context;
+    private String dir = null;
 
     static class ViewHolder {
         TextView title;
@@ -36,13 +37,14 @@ public class ViewAdapterForPins extends BaseAdapter {
         ImageView image;
     }
 
-    public ViewAdapterForPins(Activity context ,List titleList, List dateList, List countryList, List markerType, List markerImageUuidList) {
+    public ViewAdapterForPins(Activity context ,List titleList, List dateList, List countryList, List markerType, List markerImageUuidList, String dir) {
         this.titleList = titleList;
         this.dateList = dateList;
         this.countryList = countryList;
         this.markerTypeList = markerType;
         this.context = context;
         this.markerImageUuidList = markerImageUuidList;
+        this.dir = dir;
     }
 
     @Override
@@ -74,11 +76,10 @@ public class ViewAdapterForPins extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/";
         holder.title.setText(titleList.get(position).toString() + "("+markerTypeList.get(position).toString()+")");
         holder.date.setText(dateList.get(position).toString() + "  國家:"+countryList.get(position).toString());
         String uuid = markerImageUuidList.get(position).toString();
-        holder.image.setImageBitmap(BitmapFactory.decodeFile(dir + uuid + "_edit.png"));
+        holder.image.setImageBitmap(BitmapFactory.decodeFile(dir + "/LifeMap/markerImage/" + uuid + "_edit.png"));
 
         LinearLayout linearLayout= (LinearLayout) convertView.findViewById(R.id.List_view_item);
         parent.setBackgroundColor(Color.parseColor("#ffffff"));

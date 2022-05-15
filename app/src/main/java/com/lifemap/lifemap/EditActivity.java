@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -22,10 +23,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lifeMap.lifemap.R;
 import com.lifeMap.lifemap.DIY_Kit.PickerView;
 import com.lifeMap.lifemap.model_view.PinDetail;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,8 +136,12 @@ public class EditActivity extends AppCompatActivity {
 
         oldInfo = new PinDetail();
         oldInfo.setTitle(intent.getStringExtra("title"));
+        oldInfo.setDate(intent.getStringExtra("date"));
         oldInfo.setCountry(intent.getStringExtra("country"));
         oldInfo.setMarkerType(intent.getStringExtra("markerType"));
+        oldInfo.setMarkerImageUuid(intent.getStringExtra("markerImageUuid"));
+        oldInfo.setLongitude(Double.parseDouble(intent.getStringExtra("longitude")));
+        oldInfo.setLatitude(Double.parseDouble(intent.getStringExtra("latitude")));
 
         TextView toolbarText = (TextView) findViewById(R.id.toolbarText_edit);
         AssetManager mgr=getAssets();//得到AssetManager
@@ -203,7 +208,6 @@ public class EditActivity extends AppCompatActivity {
             public void onClick(DialogInterface arg0, int arg1) {
             String result = getApplicationContext().getResources().getString(R.string.edit_none);
             Toast toast = Toast.makeText(EditActivity.this, result, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
             }
 
@@ -322,5 +326,35 @@ public class EditActivity extends AppCompatActivity {
         databaseExcute.updateForEditPinInfo(db,tb_name,oldInfo,newInfo);
         setResult(RESULT_OK, null);
         finish();
+    }
+
+    // Show Map
+    public void showMap(View view) {
+        List titleList = new ArrayList();
+        List dateList = new ArrayList();
+        List markerImageUuidList = new ArrayList();
+        List longitudeList = new ArrayList();
+        List latitudeList = new ArrayList();
+
+        titleList.add(oldInfo.getTitle());
+        dateList.add(oldInfo.getDate());
+        markerImageUuidList.add(oldInfo.getMarkerImageUuid());
+        longitudeList.add(oldInfo.getLongitude());
+        latitudeList.add(oldInfo.getLatitude());
+
+        Log.d("test",oldInfo.getTitle());
+        Log.d("test",oldInfo.getDate());
+        Log.d("test",oldInfo.getMarkerImageUuid());
+        Log.d("test",oldInfo.getLongitude().toString());
+        Log.d("test",oldInfo.getLatitude().toString());
+
+        Intent intentMap = new Intent(EditActivity.this, MapsActivity.class);
+        intentMap.putExtra("entrance", "showSelectedPin");
+        intentMap.putExtra("title", (Serializable) titleList);
+        intentMap.putExtra("date", (Serializable) dateList);
+        intentMap.putExtra("markerImageUuid", (Serializable) markerImageUuidList);
+        intentMap.putExtra("longitude", (Serializable) longitudeList);
+        intentMap.putExtra("latitude", (Serializable) latitudeList);
+        startActivityForResult(intentMap, 101);
     }
 }

@@ -36,14 +36,14 @@ public class CustomClusterRenderer extends DefaultClusterRenderer<MyClusterItem>
     protected void onBeforeClusterRendered(Cluster<MyClusterItem> cluster, MarkerOptions markerOptions) {
         // 根據條件設置每一個聚集的外觀
         if(5 <= cluster.getSize() && 30 > cluster.getSize()) {
-            mClusterIconGenerator.setBackground(ContextCompat.getDrawable(mContext, R.drawable.lv1));
-            mClusterIconGenerator.setContentPadding(30,20,30,20);
+            mClusterIconGenerator.setBackground(ContextCompat.getDrawable(mContext, R.drawable.gp1));
+            mClusterIconGenerator.setContentPadding(30,15,30,20);
         }else if(30 <= cluster.getSize() && 50 > cluster.getSize()) {
-            mClusterIconGenerator.setBackground(ContextCompat.getDrawable(mContext, R.drawable.lv2));
-            mClusterIconGenerator.setContentPadding(30,20,30,20);
+            mClusterIconGenerator.setBackground(ContextCompat.getDrawable(mContext, R.drawable.gp2));
+            mClusterIconGenerator.setContentPadding(30,15,30,20);
         } else if(50 <= cluster.getSize()){
-            mClusterIconGenerator.setBackground(ContextCompat.getDrawable(mContext, R.drawable.lv3));
-            mClusterIconGenerator.setContentPadding(30,20,30,20);
+            mClusterIconGenerator.setBackground(ContextCompat.getDrawable(mContext, R.drawable.gp3));
+            mClusterIconGenerator.setContentPadding(30,15,30,20);
         }
         mClusterIconGenerator.setTextAppearance(R.style.AppTheme_WhiteTextAppearance);
         String clusterTitle = String.valueOf(cluster.getSize());

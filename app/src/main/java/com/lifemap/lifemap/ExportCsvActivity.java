@@ -27,9 +27,6 @@ import android.widget.Toast;
 
 import com.lifeMap.lifemap.DIY_Kit.DatePickerFragment;
 import com.lifeMap.lifemap.DIY_Kit.InfoItemBar;
-import com.lifeMap.lifemap.R;
-import com.lifeMap.lifemap.DIY_Kit.DatePickerFragment;
-import com.lifeMap.lifemap.DIY_Kit.InfoItemBar;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -154,7 +151,6 @@ public class ExportCsvActivity extends AppCompatActivity implements CompoundButt
         if(null == countrys || null == markerTypes ) {
             String result = getApplicationContext().getResources().getString(R.string.selection_can_not_null);
             Toast toast = Toast.makeText(ExportCsvActivity.this, result, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         } else {
             List titleList = new ArrayList();
@@ -214,7 +210,6 @@ public class ExportCsvActivity extends AppCompatActivity implements CompoundButt
             } else {
                 String result = getApplicationContext().getResources().getString(R.string.null_data_info);
                 Toast toast = Toast.makeText(ExportCsvActivity.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
         }

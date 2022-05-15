@@ -21,8 +21,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lifeMap.lifemap.R;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -189,7 +187,6 @@ public class ShowMapActivity extends AppCompatActivity implements CompoundButton
         if(null == countrys || null == markerTypes) {
             String result = getApplicationContext().getResources().getString(R.string.selection_can_not_null);
             Toast toast = Toast.makeText(ShowMapActivity.this, result, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         } else {
             List titleList = new ArrayList();
@@ -224,7 +221,6 @@ public class ShowMapActivity extends AppCompatActivity implements CompoundButton
             } else {
                 String result = getApplicationContext().getResources().getString(R.string.search_null);
                 Toast toast = Toast.makeText(ShowMapActivity.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
                 // Loading close
                 mLoadingBar.setVisibility(View.GONE);
@@ -248,7 +244,6 @@ public class ShowMapActivity extends AppCompatActivity implements CompoundButton
         } else {
             String result = getApplicationContext().getResources().getString(R.string.gps_fail);
             Toast toast = Toast.makeText(ShowMapActivity.this, result, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
     }

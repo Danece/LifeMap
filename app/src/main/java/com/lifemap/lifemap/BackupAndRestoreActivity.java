@@ -8,7 +8,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -21,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lifeMap.lifemap.R;
 import com.lifeMap.lifemap.DIY_Kit.InfoItemBar;
 
 import java.io.BufferedInputStream;
@@ -37,10 +35,10 @@ import java.util.zip.ZipOutputStream;
 
 public class BackupAndRestoreActivity extends AppCompatActivity {
 
-    private File dir = Environment.getExternalStorageDirectory();
-    private File dataFile = new File(dir, "lifeMap");
-    private String db_dir = "/data/data/com.lifeMap.lifemap/databases/";
-    private String markerImage_dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/";
+    private String dir;
+    //private File dataFile = new File(dir, "lifeMap");
+    private String db_dir; //"/data/data/com.lifeMap.lifemap/databases/";
+    private String markerImage_dir = "/LifeMap/markerImage/";
     private String db_file_name = "pinDB";
     private static int BUFFER_SIZE = 1444;
     private static String parentPath = "";
@@ -90,6 +88,10 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
         // 取消狀態欄
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        db_dir = this.getFilesDir().getAbsolutePath();
+        Log.d("TEST", db_dir);
+        dir = "/storage/emulated/0";
     }
 
     // 執行備分
@@ -98,7 +100,7 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
         try {
 
             // Check LifeMap Folder Exist
-            String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup/";
+            String dirMain = dir + "/LifeMap/backup/";
             File mainFile = new File(dirMain);
 
             // 資料夾是否存在，不存在則建立資料夾
@@ -107,7 +109,7 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
             }
 
             // Backup DB
-            String toDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup/pinDB.db";
+            String toDir = dir + "/LifeMap/backup/pinDB.db";
             File file = new File(toDir);
             FileOutputStream outputStream = new FileOutputStream(file);
             outputStream.flush();
@@ -115,15 +117,15 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
             goCopyFile(db_dir+db_file_name, toDir);
 
             // Backup MarkerImage
-            String toDir_markerImage = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup/markerImage/";
-            goCopyFolder(markerImage_dir, toDir_markerImage);
+            String toDir_markerImage = dir + "/LifeMap/backup/markerImage/";
+            goCopyFolder(db_dir + markerImage_dir, toDir_markerImage);
 
-            zip(dirMain, Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/", "backup.zip", false);
+            zip(dirMain, dir + "/LifeMap/", "backup.zip", false);
 
             try {
                 //exporting
                 Context context = getApplicationContext();
-                File filelocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup.zip");
+                File filelocation = new File(dir + "/LifeMap/backup.zip");
                 Uri path = FileProvider.getUriForFile(context, "com.lifeMap.lifemap.fileprovider", filelocation);
                 this.grantUriPermission(getPackageName(), path, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 Intent fileIntent = new Intent(Intent.ACTION_SEND);
@@ -137,14 +139,12 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
 
             result = getApplicationContext().getResources().getString(R.string.backup_success);
             Toast toast = Toast.makeText(BackupAndRestoreActivity.this, result, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
 
         } catch (Exception e) {
             e.printStackTrace();
             result = getApplicationContext().getResources().getString(R.string.backup_fail);
             Toast toast = Toast.makeText(BackupAndRestoreActivity.this, result, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
     }
@@ -154,36 +154,35 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
 
         String result = "";
         // Check LifeMap Folder Exist
-        String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup";
+        String dirMain = dir + "/LifeMap/backup";
         File mainFile = new File(dirMain);
 
         // 資料夾是否存在，不存在則跳出提示訊息
         if(!mainFile.exists()) {
             result = getApplicationContext().getResources().getString(R.string.lifeMap_folder_not_exist);
             Toast toast = Toast.makeText(BackupAndRestoreActivity.this, result, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
 
         } else {
             try {
                 // Restore DB
-                String fromDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup/pinDB.db";
+                String fromDir = dir + "/LifeMap/backup/pinDB.db";
+
                 goCopyFile(fromDir, db_dir + db_file_name);
 
                 // Restore MarkerImage
-                String fromDir_markerImage = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup/markerImage/";
-                goCopyFolder(fromDir_markerImage, markerImage_dir);
+                String fromDir_markerImage = dir + "/LifeMap/backup/markerImage/";
+                goCopyFolder(fromDir_markerImage, db_dir + markerImage_dir);
 
                 result = getApplicationContext().getResources().getString(R.string.restore_success);
                 Toast toast = Toast.makeText(BackupAndRestoreActivity.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
 
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.d("TEST", e.toString());
                 result = getApplicationContext().getResources().getString(R.string.restore_fail);
                 Toast toast = Toast.makeText(BackupAndRestoreActivity.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
         }
@@ -195,9 +194,21 @@ public class BackupAndRestoreActivity extends AppCompatActivity {
             File wantfile = new File(comepath);
             File newfile = new File(gopath);
 
+            Log.d("TEST", wantfile.exists() ? "O" : "X");
+            if (wantfile.exists()) {
+                wantfile.setReadable(true);
+                wantfile.setExecutable(true);
+                wantfile.setWritable(true);
+//                wantfile.canRead();
+//                wantfile.canWrite();
+//                wantfile.canExecute();
+            }
+
+
+            Log.d("TEST", "#################################");
             InputStream in = new FileInputStream(wantfile);
             OutputStream out = new FileOutputStream(newfile);
-
+            Log.d("TEST", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             byte[] buf = new byte[1024];
             int len;
 

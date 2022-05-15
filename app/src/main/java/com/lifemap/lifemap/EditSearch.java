@@ -23,12 +23,12 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.lifeMap.lifemap.R;
 import com.lifeMap.lifemap.DIY_Kit.PickerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+// [設定查詢條件]頁面
 public class EditSearch extends AppCompatActivity {
 
     private Spinner type_selection_spinner ;
@@ -54,6 +54,7 @@ public class EditSearch extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("TEST", "EditSearch");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_search);
         // 設定螢幕不旋轉

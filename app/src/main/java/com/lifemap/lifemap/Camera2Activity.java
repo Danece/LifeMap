@@ -21,12 +21,12 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.KeyEvent;
@@ -37,8 +37,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.lifeMap.lifemap.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,6 +75,7 @@ public class Camera2Activity extends AppCompatActivity {
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
     private Bitmap bitmapImage = null;
+    private String dir = null;
 
     CameraDevice.StateCallback stateCallBack = new CameraDevice.StateCallback() {
         @Override
@@ -144,6 +143,8 @@ public class Camera2Activity extends AppCompatActivity {
         // 取消狀態欄
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        dir = this.getFilesDir().getAbsolutePath() + "/LifeMap/captureImage/";
     }
 
     private void takePicture() {
@@ -154,7 +155,7 @@ public class Camera2Activity extends AppCompatActivity {
         // Loading open
         mLoadingBar.setVisibility(View.VISIBLE);
 
-        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/captureImage/";
+        //String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/captureImage/";
         File markerImageFile = new File(dir);
         // 資料夾是否存在，不存在則建立資料夾
         if(!markerImageFile.exists()) {
@@ -181,21 +182,17 @@ public class Camera2Activity extends AppCompatActivity {
                 width = jpegSizes[0].getWidth();
                 height = jpegSizes[0].getHeight();
             }
-
             ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
             List<Surface> outputSurface = new ArrayList<>(2);
             outputSurface.add(reader.getSurface());
             outputSurface.add(new Surface(textureView.getSurfaceTexture()));
-
             final CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureBuilder.addTarget(reader.getSurface());
             captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
-
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             //captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATION.get(rotation));
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation(rotation));
             file = new File(dir + "capture.jpeg");
-
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
@@ -228,6 +225,8 @@ public class Camera2Activity extends AppCompatActivity {
                     try {
                         outputStream = new FileOutputStream(file);
                         outputStream.write(bytes);
+                    } catch (Exception e){
+
                     } finally {
                         if (null != outputStream) outputStream.close();
                     }
@@ -239,13 +238,12 @@ public class Camera2Activity extends AppCompatActivity {
                 @Override
                 public void onCaptureCompleted (@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result){
                     super.onCaptureCompleted(session, request, result);
-                    String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/captureImage/";
+                    //String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/captureImage/";
                     file = new File(dir + "capture.jpeg");
                     Toast.makeText(Camera2Activity.this, "Saved "+file, Toast.LENGTH_SHORT).show();
                     createCameraPreview();
                 }
             };
-
             cameraDevice.createCaptureSession(outputSurface, new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession session) {

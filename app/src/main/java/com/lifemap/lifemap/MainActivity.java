@@ -23,16 +23,16 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lifeMap.lifemap.DatabaseExcute;
-import com.lifeMap.lifemap.R;
-
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 public class MainActivity extends AppCompatActivity {
     DatabaseExcute databaseExcute;
     SQLiteDatabase db;  // 資料庫物件
     static final String db_name = "pinDB";      // 資料庫名稱
     static final String tb_name = "pinDetail";  // 資料表名稱
+    private String dir = null;
 
     // 鎖住操作返回動作
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -87,10 +87,17 @@ public class MainActivity extends AppCompatActivity {
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.MANAGE_EXTERNAL_STORAGE
             }, 1);
         }
 
+        dir = this.getFilesDir().getAbsolutePath();
+
+        Log.d("DIR",new File(dir + "/LifeMap/").exists()?"Y":"N");
+        Log.d("DIR",dir);
+        Log.d("DIR",Environment.getExternalStorageDirectory().getAbsolutePath());
+        //copyFolder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/", dir + "/LifeMap/markerImage/");
     }
 
     // 建立新標記
@@ -100,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 String result = getApplicationContext().getResources().getString(R.string.no_authorization_gps);
                 Toast toast = Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             } else {
                 Intent intentMap = new Intent(MainActivity.this, CreateNewPin.class);
@@ -118,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 String result = getApplicationContext().getResources().getString(R.string.no_authorization_gps);
                 Toast toast = Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             } else {
                 Intent intentMap = new Intent(MainActivity.this, ShowMapActivity.class);
@@ -213,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void createLifeMapFolder () {
         // Check LifeMap Folder Exist
-        String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap";
+        String dirMain = dir + "/LifeMap";
         File mainFile = new File(dirMain);
 
         // 資料夾是否存在，不存在則建立資料夾
@@ -224,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void createBackupFolder () {
         // Check LifeMap Folder Exist
-        String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/backup";
+        String dirMain = dir + "/LifeMap/backup";
         File mainFile = new File(dirMain);
 
         // 資料夾是否存在，不存在則建立資料夾
@@ -232,4 +237,50 @@ public class MainActivity extends AppCompatActivity {
             mainFile.mkdir();
         }
     }
+
+    /**
+     * 複製整個資料夾內容
+     * @param oldPath String原檔路徑 如：c:/fqf
+     * @param newPath String複製後路徑 如：f:/fqf/ff
+     * @return boolean
+     */
+    public void copyFolder(String oldPath, String newPath) {
+        try{
+            (new File(newPath)).mkdirs(); //如果資料夾不存在則建立新資料夾
+            File a=new File(oldPath);
+            String[] file=a.list();
+            File temp=null;
+            for (int i = 0; i < file.length; i++) {
+                if(oldPath.endsWith(File.separator)){
+                    temp=new File(oldPath+file[i]);
+                }
+                else{
+                    temp=new File(oldPath+File.separator+file[i]);
+                }
+
+                if(temp.isFile()){
+                    FileInputStream input = new FileInputStream(temp);
+                    FileOutputStream output = new FileOutputStream(newPath + "/" + (temp.getName()).toString());
+                    byte[] b = new byte[1024 * 5];
+                    int len;
+                    while ( (len = input.read(b)) != -1) {
+                        output.write(b, 0, len);
+                    }
+                    output.flush();
+                    output.close();
+                    input.close();
+                }
+                if(temp.isDirectory()){//如果是子資料夾
+                    copyFolder(oldPath+"/"+file[i],newPath+"/"+file[i]);
+                }
+            }
+        }
+        catch(Exception e) {
+            System.out.println("複製整個資料夾內容操作出錯");
+            e.printStackTrace();
+
+        }
+
+    }
+
 }

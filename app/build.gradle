@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.lifeMap.lifemap"
         minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 8
-        versionName "2.1.4"
+        targetSdkVersion 30
+        versionCode 10
+        versionName "2.2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -38,6 +38,7 @@ dependencies {
     //implementation 'com.google.firebase:firebase-auth:16.0.3'
     implementation 'com.google.android.gms:play-services-gcm:15.0.1'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
+
     /*********************************************/
     implementation ('com.google.apis:google-api-services-drive:v3-rev136-1.25.0')
         {
@@ -50,11 +51,15 @@ dependencies {
     implementation 'com.google.http-client:google-http-client-gson:1.26.0'
     /*********************************************/
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    //noinspection GradleCompatible
     implementation 'com.android.support:design:28.0.0'
     testImplementation 'junit:junit:4.12'
+    //noinspection GradleCompatible
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    //noinspection GradleCompatible
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
 //    implementation 'com.google.android.gms:play-services-maps:7.8.0'
+//    implementation 'androidx.core:core:1.5.0'
 }

@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.hardware.camera2.full"/>
 
@@ -23,6 +24,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:hardwareAccelerated ="true"
         android:supportsRtl="true"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/MyTheme">
             <activity android:name=".CreateNewPin" android:label="@string/actionbar_createPins"></activity>
             <activity android:name=".EditPins" android:label="@string/actionbar_showPins"></activity>
@@ -31,7 +33,7 @@
             <activity android:name=".ShowMapActivity" android:label="@string/actionbar_showMap"></activity>
             <activity android:name=".BackupAndRestoreActivity" android:label="備分/還原"></activity>
             <activity android:name=".ExportCsvActivity" android:label="輸出Csv檔案"></activity>
-            <activity android:name=".MainActivity" android:label="主頁"></activity>
+            <activity android:name=".MainActivity" android:label="主頁" android:exported="true"></activity>
             <activity android:name=".WelcomeActivity">
                 <intent-filter>
                     <action android:name="android.intent.action.MAIN" />

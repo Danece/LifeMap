@@ -10,8 +10,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import com.lifeMap.lifemap.R;
-
 public class WelcomeActivity extends AppCompatActivity implements Animation.AnimationListener{
 
     private ImageView imageView;

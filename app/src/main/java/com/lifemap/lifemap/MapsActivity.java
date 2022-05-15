@@ -16,7 +16,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
-import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.location.LocationListener;
 
-import com.google.common.util.concurrent.ServiceManager;
 import com.lifeMap.lifemap.cluster.CustomClusterRenderer;
 import com.lifeMap.lifemap.cluster.MyClusterItem;
 import com.google.android.gms.common.ConnectionResult;
@@ -46,7 +44,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-//import com.google.android.gms.location.LocationListener;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -55,7 +52,6 @@ import java.util.List;
 
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
-import com.lifeMap.lifemap.cluster.MyClusterItem;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -93,14 +89,16 @@ public class MapsActivity extends FragmentActivity
     List latitudeList = new ArrayList();
 
     // The minimum distance to change Updates in meters
-    private static final long LOCATION_UPDATE_MIN_DISTANCE = 10; // 10 meters
+    private static final long LOCATION_UPDATE_MIN_DISTANCE = 1; // meters
     // The minimum time between updates in milliseconds
-    private static final long LOCATION_UPDATE_MIN_TIME = 1000 * 60 * 1; // 1 minute
+    private static final long LOCATION_UPDATE_MIN_TIME = 1000 * 5 * 1; // minute
 
     //
     private ClusterManager<MyClusterItem> mClusterManager;
     private int runCount=0;
     // 初始化建立
+
+    private String dir = null;
 
     // 鎖住操作返回動作
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -171,13 +169,14 @@ public class MapsActivity extends FragmentActivity
 
         //
         Button refreshBtn = (Button) findViewById(R.id.refreshBtn);
-        if (entrance.equals("showPins")) {
+        if (entrance.equals("showPins") || entrance.equals("showSelectedPin")) {
             refreshBtn.setVisibility(View.INVISIBLE );
         }
         // 取消狀態欄
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        dir = this.getFilesDir().getAbsolutePath();
     }
 
     // 建立 Google API 用戶端物件
@@ -230,10 +229,15 @@ public class MapsActivity extends FragmentActivity
 
         if (entrance.equals("createPin")) {
             createNewPinPositioning();
+
         } else if (entrance.equals("showPins")) {
+            Log.d("XX", "OMO");
             showAllPins();
             runCount++;
             if (runCount==2) mClusterManager.cluster();
+
+        } else if (entrance.equals("showSelectedPin")) {
+            showSelectedPin();
         }
         processController();
     }
@@ -251,14 +255,13 @@ public class MapsActivity extends FragmentActivity
         Location location = getCurrentLocation_diy();
 
         //Location location = lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
+        lat = 0;
+        lng = 0;
         if (null != location) {
             lat = location.getLatitude(); // 經度
             lng = location.getLongitude();// 緯度
-        } else {
-            lat = 0;
-            lng = 0;
 
+        } else {
             Intent intent = new Intent();
             setResult(RESULT_CANCELED, intent);
             finish();
@@ -297,11 +300,13 @@ public class MapsActivity extends FragmentActivity
             if (isNetworkEnabled) {
                 lms.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, lls);
                 location = lms.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-            if (isGPSEnabled) {
-                lms.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, lls);
-                location = lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Log.d("XX", "NET"+location);
+            } else {
+                if (isGPSEnabled) {
+                    lms.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, lls);
+                    location = lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    Log.d("XX", "GPS" + location);
+                }
             }
         }
         return location;
@@ -309,12 +314,13 @@ public class MapsActivity extends FragmentActivity
 
     // 展現所標標記地圖
     private void showAllPins() {
+        dir = this.getFilesDir().getAbsolutePath();
         if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     MY_PERMISSION_ACCESS_COARSE_LOCATION);
             return;
         }
-        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage/";
+
         if (titleList.size() > 0 && null != titleList) {
             for (int i = 0; i < titleList.size(); i++) {
                 // 建立座標物件
@@ -322,9 +328,9 @@ public class MapsActivity extends FragmentActivity
                 Double longitude = Double.parseDouble(longitudeList.get(i).toString());
                 LatLng itemPlace = new LatLng(latitude, longitude);
 
-                File markerImage = new File(dir + markerImageUuidList.get(i).toString() + ".png");
+                File markerImage = new File(dir + "/LifeMap/markerImage/" + markerImageUuidList.get(i).toString() + ".png");
                 if (markerImage.exists()) {
-                    markerIcon = BitmapFactory.decodeFile(dir + markerImageUuidList.get(i).toString() + ".png");
+                    markerIcon = BitmapFactory.decodeFile(dir + "/LifeMap/markerImage/" + markerImageUuidList.get(i).toString() + ".png");
                     mClusterManager.addItem(new MyClusterItem(titleList.get(i).toString(), dateList.get(i).toString(),itemPlace,markerIcon));
                 }
             }
@@ -349,6 +355,24 @@ public class MapsActivity extends FragmentActivity
         //lms.removeUpdates(this);
     }
 
+    // 展現指定標記
+    private void showSelectedPin () {
+
+        dir = this.getFilesDir().getAbsolutePath();
+        // 建立座標物件
+        Double latitude = Double.parseDouble(latitudeList.get(0).toString());
+        Double longitude = Double.parseDouble(longitudeList.get(0).toString());
+        LatLng itemPlace = new LatLng(latitude, longitude);
+
+        File markerImage = new File(dir + "/LifeMap/markerImage/" + markerImageUuidList.get(0).toString() + ".png");
+        if (markerImage.exists()) {
+            markerIcon = BitmapFactory.decodeFile(dir + "/LifeMap/markerImage/" + markerImageUuidList.get(0).toString() + ".png");
+            mClusterManager.addItem(new MyClusterItem(titleList.get(0).toString(), dateList.get(0).toString(),itemPlace,markerIcon));
+        }
+
+        moveMap(itemPlace);
+    }
+
     // 移動地圖到指定位置
     private void moveMap(LatLng place) {
         // 建立地圖攝影機的位置物件
@@ -370,9 +394,35 @@ public class MapsActivity extends FragmentActivity
         markerOptions.position(place)
                 .title(title)
                 .snippet(snippet)
-                .icon(icon);
+                .icon(icon)
+                .draggable(true);
 
         itemMarker = mMap.addMarker(markerOptions);
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+                if (null != markerList) {
+                    if (1 < markerList.size()) {
+                        for (int i = 1; i < markerList.size(); i++) {
+                            markerList.get(i).remove();
+                            markerList.remove(i);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                lat = marker.getPosition().latitude; // 經度
+                lng = marker.getPosition().longitude;// 緯度
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+
+            }
+        });
         markerList.add(itemMarker);
     }
 
@@ -603,6 +653,7 @@ public class MapsActivity extends FragmentActivity
         if (null != markerList) {
             for (int i = 0; i < markerList.size(); i++) {
                 markerList.get(i).remove();
+                markerList.remove(i);
             }
         }
         lms = null;

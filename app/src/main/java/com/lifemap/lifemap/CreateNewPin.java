@@ -15,7 +15,6 @@ import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.media.ExifInterface;
 import android.os.Build;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -36,7 +35,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lifeMap.lifemap.R;
 import com.lifeMap.lifemap.DIY_Kit.BitmapCut;
 import com.lifeMap.lifemap.DIY_Kit.PickerView;
 
@@ -67,7 +65,8 @@ public class CreateNewPin extends AppCompatActivity {
     Bitmap markerImageForEdit;
     String markerImageUuid; // 標記圖片UUID
     String errorMessage;    // 錯誤訊息
-    String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/captureImage/";// GPS
+    //String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/captureImage/";// GPS
+    private String dir = null;
     DatabaseExcute databaseExcute;
 
     // 鎖住操作返回動作
@@ -174,10 +173,11 @@ public class CreateNewPin extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
+        dir = this.getFilesDir().getAbsolutePath();
         if(Activity.RESULT_OK == resultCode) {
             // 拍照
             if(100 == requestCode) {
-                Bitmap bmp = getSmallBitmap(dir + "capture.jpeg");
+                Bitmap bmp = getSmallBitmap(dir + "/LifeMap/captureImage/" + "capture.jpeg");
 //                Bitmap bmp = readFile(new File(dir + "capture.jpeg"));
                 if (null != bmp) {
                     resultPicture = bmp;
@@ -197,12 +197,10 @@ public class CreateNewPin extends AppCompatActivity {
             if(100 == requestCode) {
                 String result = getApplicationContext().getResources().getString(R.string.take_picture_fail);
                 Toast toast = Toast.makeText(CreateNewPin.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             } else if(101 == requestCode) {
                 String result = getApplicationContext().getResources().getString(R.string.gps_fail);
                 Toast toast = Toast.makeText(CreateNewPin.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
         }
@@ -262,7 +260,6 @@ public class CreateNewPin extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 String result = getApplicationContext().getResources().getString(R.string.edit_none);
                 Toast toast = Toast.makeText(CreateNewPin.this, result, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
 
@@ -394,17 +391,18 @@ public class CreateNewPin extends AppCompatActivity {
     // 建立存放圖片的資料夾 & 存放圖片
     public void saveMarkerImage() {
 
+        dir = this.getFilesDir().getAbsolutePath();
         // Check LifeMap Folder Exist
-        String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap";
-        File mainFile = new File(dirMain);
+        //String dirMain = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap";
+        File mainFile = new File(dir + "/LifeMap");
 
         // 資料夾是否存在，不存在則建立資料夾
         if(!mainFile.exists()) {
             mainFile.mkdirs();
         }
 
-        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage";
-        File markerImageFile = new File(dir);
+        //String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LifeMap/markerImage";
+        File markerImageFile = new File(dir + "/LifeMap/markerImage");
         markerImageUuid = UUID.randomUUID().toString();
 
         // 資料夾是否存在，不存在則建立資料夾
@@ -413,13 +411,13 @@ public class CreateNewPin extends AppCompatActivity {
         }
 
         try {
-            File file = new File(dir + "/" + markerImageUuid + ".png");
+            File file = new File(dir + "/LifeMap/markerImage/" + markerImageUuid + ".png");
             FileOutputStream outputStream = new FileOutputStream(file);
             markerImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             outputStream.flush();
             outputStream.close();
 
-            File file2 = new File(dir + "/" + markerImageUuid + "_edit.png");
+            File file2 = new File(dir + "/LifeMap/markerImage/" + markerImageUuid + "_edit.png");
             FileOutputStream outputStream2 = new FileOutputStream(file2);
             markerImageForEdit.compress(Bitmap.CompressFormat.PNG, 100, outputStream2);
             outputStream.flush();
@@ -521,7 +519,6 @@ public class CreateNewPin extends AppCompatActivity {
             writeDB();
             String result = getApplicationContext().getResources().getString(R.string.create_success);
             Toast toast = Toast.makeText(CreateNewPin.this, result, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
             finish();
         } else {

@@ -88,4 +88,29 @@ public class DatabaseExcute extends AppCompatActivity {
         return cursor;
     }
 
+    public Cursor getAll(SQLiteDatabase db, String tb_name) {
+        String condition = " WHERE 1=1";
+
+        Cursor cursor = db.rawQuery("SELECT * FROM "+ tb_name + condition , null);
+        Log.d("XX_databaseExcute", condition);
+        return cursor;
+    }
+
+    public Cursor getDbInfoForPinsSearch(SQLiteDatabase db, String tb_name, String title, String country, String markType) {
+        String condition = " WHERE 1=1 ";
+        if (!"".equals(title)) {
+            condition += "AND title LIKE '%" + title + "%'";
+        }
+        if (!"".equals(country)) {
+            condition += "AND country = '" + country + "' ";
+        }
+        if (!"全部".equals(markType)) {
+            condition += "AND markerType = '" + markType + "' ";
+        }
+
+        Cursor cursor = db.rawQuery("SELECT * FROM "+ tb_name + condition , null);
+        Log.d("XX_databaseExcute", condition);
+        return cursor;
+    }
 }
+
